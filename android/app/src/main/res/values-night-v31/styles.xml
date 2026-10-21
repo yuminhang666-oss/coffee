@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowSplashScreenBackground">#1A1715</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/coffee_icon</item>
+        <item name="android:windowBackground">#1A1715</item>
+    </style>
+</resources>

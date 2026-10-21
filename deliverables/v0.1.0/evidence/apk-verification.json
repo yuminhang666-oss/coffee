@@ -1,0 +1,27 @@
+{
+  "assets": [
+    {
+      "name": "CoffeeJournal-0.1.0-arm64.apk",
+      "bytes": 18252716,
+      "sha256": "b810929c6eaf7e1a2e541689e7bd779f0dd700daa69017a22f5a512646f3e8bf",
+      "minSdk": 24,
+      "targetSdk": 36,
+      "version": "0.1.0",
+      "versionCode": 1,
+      "applicationId": "cn.coffeejournal.coffee_journal",
+      "internetPermission": false
+    },
+    {
+      "name": "CoffeeJournal-0.1.0-arm32.apk",
+      "bytes": 15792500,
+      "sha256": "9324d4caf6cbf31941437d984218aabe5503f4efa7339abe1cd950cba1f60bc4",
+      "minSdk": 24,
+      "targetSdk": 36,
+      "version": "0.1.0",
+      "versionCode": 1,
+      "applicationId": "cn.coffeejournal.coffee_journal",
+      "internetPermission": false
+    }
+  ],
+  "signature": "APK v2, Android Debug certificate, verification passed"
+}

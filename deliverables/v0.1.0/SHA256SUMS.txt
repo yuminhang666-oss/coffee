@@ -1,0 +1,2 @@
+b810929c6eaf7e1a2e541689e7bd779f0dd700daa69017a22f5a512646f3e8bf  CoffeeJournal-0.1.0-arm64.apk
+9324d4caf6cbf31941437d984218aabe5503f4efa7339abe1cd950cba1f60bc4  CoffeeJournal-0.1.0-arm32.apk

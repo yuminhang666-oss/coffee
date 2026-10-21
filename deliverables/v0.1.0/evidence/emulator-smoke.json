@@ -1,0 +1,35 @@
+{
+  "device": "Android API 36 x86_64 read-only AVD instance",
+  "personalData": false,
+  "debug": {
+    "beanCreatedFromUI": true,
+    "postBrewRecordCreatedFromUI": true,
+    "grams": 15.5,
+    "water": 240,
+    "seconds": 145,
+    "feelingsPreservedAfterProcessRestart": true,
+    "remainingGrams": 234.5,
+    "themePreservedAfterRestart": true,
+    "nativeSystemPickerExport": true,
+    "nativeSystemPickerRestore": true,
+    "exportMatchesRestoredData": true,
+    "previousDataPreservedBeforeRestore": true,
+    "invalidImportRejectedWithoutOverwriting": true,
+    "recordEditedFromUI": true,
+    "remainingAfterEdit": 233.5,
+    "recordDeletedFromUI": true,
+    "inventoryReturnedAfterDeleteAndRestart": 250
+  },
+  "release": {
+    "mode": "release non-debuggable x86_64",
+    "installedOverDebug": true,
+    "upgradePreservedDataInUI": true,
+    "postBrewSaveAndProcessRestartInUI": true,
+    "remainingBeforeNewRecord": 235,
+    "recordedGrams": 15.5,
+    "remainingAfterRestartInUI": 219.5,
+    "systemPickerRestore": true,
+    "restoredExampleBeans": 2,
+    "restoredExampleCups": 3
+  }
+}
