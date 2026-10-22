@@ -1,0 +1,12 @@
+{
+  "scenario": "Direct final ARM64 release-to-release install -r, no uninstall; real system exports compared",
+  "device": "emulator-5588, API36 x86_64 with arm64-v8a translation",
+  "oldSchema": 1,
+  "newSchema": 2,
+  "beans": 2,
+  "cups": 3,
+  "allOldFieldsAndIdsPreserved": true,
+  "themeAndDemoPreserved": true,
+  "finalApkSha256": "736d6849abd3ce1be6ccabd065a2eb726ba2b448060f59ee52cc23116bdd9b8d",
+  "newFieldsEmpty": true
+}

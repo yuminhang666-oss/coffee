@@ -1,0 +1,141 @@
+{
+  "environment": "API 36 x86_64, read-only AVD, software SwiftShader, Flutter profile, 1080x1920, 420 dpi",
+  "scenario": "5 scroll cycles, 4 detail/back cycles, full photo/back, journal and insights; cold startup first 3 seconds excluded; cumulative latest sample is reported",
+  "samples": [
+    {
+      "frames": 216,
+      "build": {
+        "medianMs": 0.761,
+        "p90Ms": 1.233,
+        "maxMs": 5.51,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 8.846,
+        "p90Ms": 17.478,
+        "maxMs": 28.522,
+        "over16_67ms": 35
+      }
+    },
+    {
+      "frames": 500,
+      "build": {
+        "medianMs": 0.757,
+        "p90Ms": 1.267,
+        "maxMs": 6.253,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 7.069,
+        "p90Ms": 15.885,
+        "maxMs": 28.522,
+        "over16_67ms": 37
+      }
+    },
+    {
+      "frames": 33,
+      "build": {
+        "medianMs": 1.262,
+        "p90Ms": 1.985,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 14.394,
+        "p90Ms": 19.629,
+        "maxMs": 25.873,
+        "over16_67ms": 10
+      }
+    },
+    {
+      "frames": 69,
+      "build": {
+        "medianMs": 1.126,
+        "p90Ms": 2.537,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 9.473,
+        "p90Ms": 17.229,
+        "maxMs": 25.873,
+        "over16_67ms": 10
+      }
+    },
+    {
+      "frames": 133,
+      "build": {
+        "medianMs": 1.177,
+        "p90Ms": 3.083,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 9.338,
+        "p90Ms": 16.803,
+        "maxMs": 25.873,
+        "over16_67ms": 14
+      }
+    },
+    {
+      "frames": 155,
+      "build": {
+        "medianMs": 1.165,
+        "p90Ms": 4.382,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 9.473,
+        "p90Ms": 17.229,
+        "maxMs": 25.873,
+        "over16_67ms": 20
+      }
+    },
+    {
+      "frames": 215,
+      "build": {
+        "medianMs": 1.158,
+        "p90Ms": 3.214,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 11.218,
+        "p90Ms": 18.571,
+        "maxMs": 25.873,
+        "over16_67ms": 37
+      }
+    },
+    {
+      "frames": 376,
+      "build": {
+        "medianMs": 1.049,
+        "p90Ms": 2.537,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 13.171,
+        "p90Ms": 18.864,
+        "maxMs": 25.873,
+        "over16_67ms": 88
+      }
+    },
+    {
+      "frames": 391,
+      "build": {
+        "medianMs": 1.049,
+        "p90Ms": 2.451,
+        "maxMs": 11.039,
+        "over16_67ms": 0
+      },
+      "raster": {
+        "medianMs": 12.914,
+        "p90Ms": 18.815,
+        "maxMs": 25.873,
+        "over16_67ms": 88
+      }
+    }
+  ]
+}

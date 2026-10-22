@@ -1,0 +1,9 @@
+{
+  "mode": "Final release form -> save -> restart -> system ZIP export",
+  "temperature": 93,
+  "brewer": "V60",
+  "grinder": "C40",
+  "grind": "22 clicks",
+  "gramsTenths": 155,
+  "passed": true
+}

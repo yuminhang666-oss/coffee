@@ -1,0 +1,9 @@
+{
+  "mode": "Final release system export after restore and undo",
+  "beans": 3,
+  "cups": 4,
+  "roaster": "QA_FINAL_UNDO",
+  "restoredReplacementPhoto": "08d90f20-6f3a-488f-8caa-a314db8d7607.jpg",
+  "originalPhoto": "85c33298-aab8-422e-9467-d65b13af7980.jpg",
+  "photoReferencesDiffer": true
+}

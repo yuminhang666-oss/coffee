@@ -1,0 +1,45 @@
+{
+  "applicationId": "cn.coffeejournal.coffee_journal",
+  "matchesV010Certificate": true,
+  "assets": [
+    {
+      "name": "CoffeeJournal-0.2.0-arm64.apk",
+      "bytes": 18465988,
+      "sha256": "736d6849abd3ce1be6ccabd065a2eb726ba2b448060f59ee52cc23116bdd9b8d",
+      "version": "0.2.0",
+      "versionCode": 2,
+      "minSdk": 24,
+      "targetSdk": 36,
+      "abi": "arm64-v8a",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "permissions": "package: cn.coffeejournal.coffee_journal\r\npermission: cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\r\nuses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'",
+      "debugInstrumentation": false
+    },
+    {
+      "name": "CoffeeJournal-0.2.0-arm32.apk",
+      "bytes": 16022156,
+      "sha256": "e561a1b6ac762cb8cff6c28b4afae520b5b0699d743e82353cb99a6a255eb8b2",
+      "version": "0.2.0",
+      "versionCode": 2,
+      "minSdk": 24,
+      "targetSdk": 36,
+      "abi": "armeabi-v7a",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "permissions": "package: cn.coffeejournal.coffee_journal\r\npermission: cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\r\nuses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'",
+      "debugInstrumentation": false
+    },
+    {
+      "name": "CoffeeJournal-0.2.0-x86_64.apk",
+      "bytes": 19966150,
+      "sha256": "3c0d306ea6e587f378d1cadd9d305c3f277bbd6f8281205ec336791bc3f6f7d0",
+      "version": "0.2.0",
+      "versionCode": 2,
+      "minSdk": 24,
+      "targetSdk": 36,
+      "abi": "x86_64",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "permissions": "package: cn.coffeejournal.coffee_journal\r\npermission: cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\r\nuses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'",
+      "debugInstrumentation": false
+    }
+  ]
+}

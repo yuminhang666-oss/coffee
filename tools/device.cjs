@@ -3,7 +3,7 @@ const path=require('node:path');
 const {execFileSync}=require('node:child_process');
 const adbPath='D:/Codex/PocketFlowTools/android-sdk/platform-tools/adb.exe';
 const device=process.env.ANDROID_SERIAL||'emulator-5586';
-const evidence=path.resolve(__dirname,'../deliverables/v0.1.0/evidence');
+const evidence=path.resolve(process.env.COFFEE_EVIDENCE||path.join(__dirname,'../deliverables/v0.2.0/evidence'));
 const pkg='cn.coffeejournal.coffee_journal';
 fs.mkdirSync(evidence,{recursive:true});
 function adb(...args){return execFileSync(adbPath,['-s',device,...args]);}

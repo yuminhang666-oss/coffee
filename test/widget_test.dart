@@ -155,7 +155,7 @@ void main() {
       expect(c.data.demo, true);
       expect(
         () => CoffeeData.decode(
-          c.data.encode().replaceFirst('"schema": 1', '"schema": 99'),
+          c.data.encode().replaceFirst('"schema": 2', '"schema": 99'),
         ),
         throwsFormatException,
       );
@@ -184,7 +184,7 @@ void main() {
         throwsFormatException,
       );
       expect(
-        () => CoffeeData.decode(valid.encode().replaceFirst('15.5', '15.55')),
+        () => CoffeeData.decode(valid.encode().replaceFirst('155', '155.5')),
         throwsFormatException,
       );
     },

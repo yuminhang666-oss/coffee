@@ -1,0 +1,95 @@
+{
+  "app": "coffee-journal",
+  "schema": 1,
+  "cups": [
+    {
+      "id": "demo-c1",
+      "name": "一杯花香，慢慢醒来",
+      "at": "2026-10-21T18:07:44.783990",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：轻盈的柑橘酸，放凉后有淡淡的茉莉花香。",
+      "beanId": "demo-b1",
+      "cents": 0,
+      "rating": 5,
+      "grams": 15.0,
+      "water": 225,
+      "seconds": 150,
+      "favorite": true,
+      "tastes": [
+        "花香",
+        "柑橘",
+        "茶感"
+      ]
+    },
+    {
+      "id": "demo-c2",
+      "name": "午后，给自己留一杯",
+      "at": "2026-10-20T18:07:44.783990",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：坚果和奶油的香气，口感圆润。",
+      "beanId": "demo-b2",
+      "cents": 0,
+      "rating": 4,
+      "grams": 18.0,
+      "water": 270,
+      "seconds": 165,
+      "favorite": false,
+      "tastes": [
+        "坚果",
+        "奶油"
+      ]
+    },
+    {
+      "id": "demo-c3",
+      "name": "留一点可可的余韵",
+      "at": "2026-10-18T18:07:44.783990",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：可可香气明显，下次试试再细一点的研磨。",
+      "beanId": "demo-b2",
+      "cents": 0,
+      "rating": 4,
+      "grams": 15.0,
+      "water": 225,
+      "seconds": 140,
+      "favorite": false,
+      "tastes": [
+        "可可",
+        "焦糖"
+      ]
+    }
+  ],
+  "beans": [
+    {
+      "id": "demo-b1",
+      "name": "耶加雪菲 · 花见",
+      "origin": "埃塞俄比亚",
+      "roast": "浅烘",
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "晨间烘焙（示例）",
+      "weight": 250,
+      "cents": 8800,
+      "boughtAt": "2026-10-21T18:07:44.783990",
+      "roastedAt": "2026-10-16T00:00:00.000"
+    },
+    {
+      "id": "demo-b2",
+      "name": "山野拼配",
+      "origin": "巴西 / 哥伦比亚",
+      "roast": "中烘",
+      "process": "日晒",
+      "note": "",
+      "roaster": "山野烘焙（示例）",
+      "weight": 250,
+      "cents": 6800,
+      "boughtAt": "2026-10-21T18:07:44.783990",
+      "roastedAt": null
+    }
+  ],
+  "onboarded": true,
+  "demo": true,
+  "theme": "system"
+}

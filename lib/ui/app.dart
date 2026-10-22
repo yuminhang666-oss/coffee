@@ -134,7 +134,10 @@ class _CoffeeRootState extends State<CoffeeRoot> {
                     selected: tab == i,
                     child: Press(
                       label: ['豆仓', '手记', '回味'][i],
-                      onTap: () => setState(() => tab = i),
+                      onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        setState(() => tab = i);
+                      },
                       child: AnimatedContainer(
                         duration: Duration(
                           milliseconds: MediaQuery.disableAnimationsOf(c)
@@ -320,73 +323,36 @@ class _PantryState extends State<Pantry> {
         )
         .toList();
     return ListView(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 26),
+      key: const PageStorageKey('pantry'),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 26),
       children: [
-        PageHeading(
-          'THE COFFEE JOURNAL',
-          '我的豆仓',
-          '好豆子值得收藏，也值得慢慢喝。',
-          trailing: settingsButton(c, ct),
-        ),
-        Press(
-          label: '添加咖啡豆',
-          onTap: () => editBean(c, ct),
-          child: Container(
-            padding: const EdgeInsets.all(22),
-            decoration: BoxDecoration(
-              color: const Color(0xFF3B2B23),
-              borderRadius: BorderRadius.circular(26),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'BEANS FOR BETTER DAYS',
-                  style: TextStyle(
-                    color: Color(0xFFCCB8A1),
-                    fontSize: 9,
-                    letterSpacing: 2,
-                  ),
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 8),
+          child: Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  '我的豆仓',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 18),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 26,
-                        runSpacing: 16,
-                        children: [
-                          _heroMetric('$active', '袋在喝'),
-                          _heroMetric(gramsText(grams), 'g 豆仓余量'),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE9D1AF),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(
-                        Icons.add_rounded,
-                        color: espresso,
-                        size: 26,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                const Text(
-                  '收一袋新豆，让日常多一点香气。',
-                  style: TextStyle(color: Color(0xFFCCB8A1), fontSize: 11),
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                tooltip: '添加咖啡豆',
+                onPressed: () => editBean(c, ct),
+                icon: const Icon(Icons.add_rounded),
+              ),
+              settingsButton(c, ct),
+            ],
           ),
         ),
-        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            '$active 袋在喝 · 余量 ${gramsText(grams)} g',
+            style: TextStyle(color: muted(c), fontSize: 12),
+          ),
+        ),
         Row(
           children: [
             Expanded(
@@ -398,7 +364,10 @@ class _PantryState extends State<Pantry> {
                       label: Text(f, style: const TextStyle(fontSize: 12)),
                       selected: filter == f,
                       showCheckmark: false,
-                      onSelected: (_) => setState(() => filter = f),
+                      onSelected: (_) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        setState(() => filter = f);
+                      },
                       side: BorderSide.none,
                     ),
                 ],
@@ -436,6 +405,7 @@ class _PantryState extends State<Pantry> {
             child: BeanCard(
               bean: b,
               data: d,
+              directory: ct.mediaDirectory,
               onTap: () => Navigator.of(c).push(
                 CoffeeRoute(
                   context: c,
@@ -457,36 +427,18 @@ class _PantryState extends State<Pantry> {
       ],
     );
   }
-
-  Widget _heroMetric(String value, String label) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        value,
-        style: const TextStyle(
-          color: Color(0xFFFFF5E6),
-          fontSize: 30,
-          fontFamily: 'serif',
-          height: 1.1,
-        ),
-      ),
-      const SizedBox(height: 7),
-      Text(
-        label,
-        style: const TextStyle(color: Color(0xFFCCB8A1), fontSize: 10),
-      ),
-    ],
-  );
 }
 
 class BeanCard extends StatelessWidget {
   final Bean bean;
   final CoffeeData data;
+  final String? directory;
   final VoidCallback onTap;
   const BeanCard({
     super.key,
     required this.bean,
     required this.data,
+    this.directory,
     required this.onTap,
   });
   @override
@@ -502,16 +454,11 @@ class BeanCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 64,
-                  height: 76,
-                  decoration: BoxDecoration(
-                    color: bean.roast == '浅烘'
-                        ? const Color(0xFFEDE7D9)
-                        : const Color(0xFFE3D1BF),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const CoffeeArt(bean: true),
+                BeanPhoto(
+                  photo: bean.photo,
+                  directory: directory,
+                  width: 76,
+                  height: 94,
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -519,7 +466,7 @@ class BeanCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        bean.origin.isEmpty ? '一袋好豆' : bean.origin,
+                        bean.roaster.isEmpty ? '烘焙商未填写' : bean.roaster,
                         style: TextStyle(
                           fontSize: 10,
                           color: muted(c),
@@ -558,7 +505,7 @@ class BeanCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    left == 0 ? '这一袋，喝完了' : '余量 ${gramsText(left)} g',
+                    left == 0 ? '余量 0 g · 已喝完' : '余量 ${gramsText(left)} g',
                     style: TextStyle(
                       fontSize: 11,
                       color: left == 0
@@ -569,7 +516,7 @@ class BeanCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '购入 ${bean.weight} g',
+                  '购入 ${gramsText(bean.weight)} g',
                   style: TextStyle(fontSize: 10, color: muted(c)),
                 ),
               ],
@@ -635,15 +582,16 @@ class BeanDetail extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.fromLTRB(24, 10, 24, 28),
           children: [
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                color: const Color(0xFFEDE1CE),
-                borderRadius: BorderRadius.circular(26),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(18),
-                child: CoffeeArt(bean: true),
+            Press(
+              label: '查看豆袋大图',
+              onTap: b.photo.isEmpty
+                  ? null
+                  : () => showBeanPhoto(c, b.photo, controller.mediaDirectory),
+              child: BeanPhoto(
+                photo: b.photo,
+                directory: controller.mediaDirectory,
+                thumbnail: false,
+                height: 200,
               ),
             ),
             const SizedBox(height: 24),
@@ -671,7 +619,7 @@ class BeanDetail extends StatelessWidget {
                   _fact(
                     c,
                     '购入 / 剩余',
-                    '${b.weight} g / ${gramsText(controller.data.remaining(b))} g',
+                    '${gramsText(b.weight)} g / ${gramsText(controller.data.remaining(b))} g',
                   ),
                   _fact(c, '购入价格', b.cents == 0 ? '未填写' : '¥${money(b.cents)}'),
                   _fact(
@@ -696,6 +644,31 @@ class BeanDetail extends StatelessWidget {
                 ),
               ),
             ],
+            if (logs.isNotEmpty)
+              OutlinedButton.icon(
+                onPressed: controller.data.remaining(b) <= 0
+                    ? null
+                    : () => editCup(c, controller, bean: b, reuse: logs.first),
+                icon: const Icon(Icons.replay_rounded),
+                label: const Text('沿用上次参数'),
+              ),
+            TextButton.icon(
+              onPressed: () => adjustStock(c, controller, b),
+              icon: const Icon(Icons.tune_rounded),
+              label: const Text('校正余量'),
+            ),
+            for (final a
+                in controller.data.adjustments
+                    .where((a) => a.beanId == b.id)
+                    .toList()
+                    .reversed)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  '${dayKey(a.at)} · ${gramsText(a.before / 10)} → ${gramsText(a.after / 10)} g · ${a.reason}',
+                  style: TextStyle(fontSize: 12, color: muted(c)),
+                ),
+              ),
             SectionTitle('这一袋的手记', aside: '${logs.length} 杯'),
             if (logs.isEmpty) const EmptyState('还没有冲煮记录', '喝完第一杯，再来记下参数和感受。'),
             for (final cup in logs)
@@ -1015,7 +988,7 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   children: [
                     _parameter(c, '${gramsText(cup.grams)} g', '粉量'),
                     _parameter(c, '${cup.water} g', '注水'),
-                    _parameter(c, '${cup.seconds} s', '时长'),
+                    _parameter(c, '${cup.seconds} 秒', '时长'),
                     _parameter(
                       c,
                       cup.grams > 0
@@ -1026,6 +999,22 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   ],
                 ),
               ),
+              if (cup.temperature != null ||
+                  cup.brewer.isNotEmpty ||
+                  cup.grinder.isNotEmpty ||
+                  cup.grind.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
+                    [
+                      if (cup.temperature != null) '水温 ${cup.temperature} °C',
+                      if (cup.brewer.isNotEmpty) '器具 ${cup.brewer}',
+                      if (cup.grinder.isNotEmpty) '磨豆机 ${cup.grinder}',
+                      if (cup.grind.isNotEmpty) '研磨 ${cup.grind}',
+                    ].join(' · '),
+                    style: TextStyle(color: muted(c), fontSize: 13),
+                  ),
+                ),
               const SectionTitle('当时的感受'),
               Text(
                 cup.note.isEmpty ? '这一杯，暂时没有写下感受。' : cup.note,
@@ -1080,12 +1069,18 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   if (await confirm(
                     sheet,
                     '删除这篇手记？',
-                    '删除后，相应的用豆量会返还豆仓。',
+                    '删除后，相应的用豆量会返还豆仓。\${ct.stockImpact(ct.data.copy(cups: ct.data.cups.where((x) => x.id != cup.id).toList()), {cup.beanId})}',
                     action: '删除',
                     destructive: true,
                   )) {
                     final ok = await ct.removeCup(cup.id);
-                    if (ok && sheet.mounted) Navigator.pop(sheet);
+                    if (sheet.mounted) {
+                      if (ok) {
+                        Navigator.pop(sheet);
+                      } else {
+                        message(sheet, ct.error!);
+                      }
+                    }
                   }
                 },
                 child: Text(
@@ -1367,10 +1362,11 @@ class _SettingsPageState extends State<SettingsPage> {
     if (store is! AndroidStore) return;
     setState(() => working = true);
     try {
-      final ok = await store.export(
-        widget.controller.data.encode(backup: true),
-      );
+      final ok = await widget.controller.exportBackup();
       if (ok && mounted) message(context, '备份已保存到你选择的位置。');
+      if (!ok && mounted && widget.controller.error != null) {
+        message(context, widget.controller.error!);
+      }
     } catch (_) {
       if (mounted) message(context, '备份未导出，请检查所选位置后重试。');
     } finally {
@@ -1383,14 +1379,18 @@ class _SettingsPageState extends State<SettingsPage> {
     if (store is! AndroidStore) return;
     setState(() => working = true);
     try {
-      final raw = await store.importFile();
-      if (raw == null) return;
-      final candidate = CoffeeData.decode(raw);
+      final candidate = await widget.controller.prepareImport();
+      if (candidate == null) {
+        if (mounted && widget.controller.error != null) {
+          message(context, widget.controller.error!);
+        }
+        return;
+      }
       if (!mounted) return;
       if (await confirm(
         context,
         '恢复这份备份？',
-        '包含 ${candidate.beans.length} 袋豆子、${candidate.cups.length} 篇手记${candidate.demo ? '（示例空间）' : ''}。\n将替换当前豆仓。替换前会在应用内保留一份原数据副本。',
+        '包含 ${candidate.beans.length} 袋豆子、${candidate.cups.length} 篇手记、${candidate.photos.length} 张照片${candidate.demo ? '（示例空间）' : ''}。\n将替换当前豆仓。替换前会在应用内保留原记录与相应照片，可在设置中撤销恢复。',
         action: '替换并恢复',
         destructive: true,
       )) {
@@ -1447,7 +1447,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     leading: const Icon(Icons.file_upload_outlined),
                     title: const Text('导出豆仓备份', style: TextStyle(fontSize: 14)),
                     subtitle: const Text(
-                      'JSON 文件，保存到自己选择的位置',
+                      '完整 ZIP · 含照片 · 也可恢复旧 JSON',
                       style: TextStyle(fontSize: 11),
                     ),
                     trailing: const Icon(Icons.chevron_right_rounded, size: 18),
@@ -1466,12 +1466,37 @@ class _SettingsPageState extends State<SettingsPage> {
                     enabled: enabled,
                     onTap: enabled ? restore : null,
                   ),
+                  const Divider(indent: 54),
+                  ListTile(
+                    leading: const Icon(Icons.undo_rounded),
+                    title: const Text('撤销上次恢复', style: TextStyle(fontSize: 14)),
+                    subtitle: const Text(
+                      '找回恢复前的记录与照片',
+                      style: TextStyle(fontSize: 11),
+                    ),
+                    enabled: enabled && ct.canUndo,
+                    onTap: enabled && ct.canUndo
+                        ? () async {
+                            if (await confirm(
+                              c,
+                              '撤销上次恢复？',
+                              '恢复到上次替换前的豆仓及照片。当前修改将被替换。',
+                              action: '撤销恢复',
+                            )) {
+                              final ok = await ct.undoRestore();
+                              if (c.mounted) {
+                                message(c, ok ? '已找回恢复前的豆仓和照片。' : ct.error!);
+                              }
+                            }
+                          }
+                        : null,
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 14),
             Text(
-              '记录只保存在这台设备中。卸载应用会清除本机数据，请定期导出备份；备份文件未加密。',
+              '记录只在本机；备份未加密。完整 ZIP v2 最大 64 MB、4002 个文件（含缩略图），数据 JSON 最大 5 MB；最多 2000 袋豆子、10000 篇手记、10000 条校正。照片原文件最大 30 MB / 8000 万像素。卸载会清除本机数据，请定期备份。',
               style: TextStyle(color: muted(c), fontSize: 12, height: 1.8),
             ),
             if (ct.data.demo) ...[
@@ -1499,7 +1524,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                '0.1.0 · 本地体验版',
+                '0.2.0 · 本地体验版',
                 style: TextStyle(color: muted(c), fontSize: 11),
               ),
             ),

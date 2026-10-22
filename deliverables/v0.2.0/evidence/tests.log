@@ -1,0 +1,31 @@
+00:00 +0: loading D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart
+00:00 +0: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Examples require an explicit choice and survive JSON round trip
+00:00 +1: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Adding, editing and deleting cups adjust inventory without rounding drift
+00:00 +2: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Moving a record to another bean returns original stock
+00:00 +3: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Deleting a bean retains tasting notes and detaches its records
+00:00 +4: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +5: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +6: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +7: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +8: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +9: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +10: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +11: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Decimal grams are exact to tenths over many records
+00:00 +12: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Decimal grams are exact to tenths over many records
+00:00 +13: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Corrections remain independent across edit, move, delete, restart and finance
+00:00 +14: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Corrections remain independent across edit, move, delete, restart and finance
+00:00 +15: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +16: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +17: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +18: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +19: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +20: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:00 +21: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: First launch is empty and starts on the bean pantry
+00:01 +22: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Reused form consumes nothing before save and Back retains long feelings
+00:01 +23: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Reused form consumes nothing before save and Back retains long feelings
+00:01 +24: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Reused form consumes nothing before save and Back retains long feelings
+00:02 +25: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Pantry, journal, insights and editor fit 320px at text scale 2.0
+00:02 +26: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: A new cup after stock correction saves in one step
+00:02 +27: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: 320px, 2x text: long names/feelings, zero stock and optional fields in light
+00:02 +28: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: 320px, 2x text: long names/feelings, zero stock and optional fields in dark
+00:03 +29: All tests passed!

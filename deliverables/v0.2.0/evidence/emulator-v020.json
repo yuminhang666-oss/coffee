@@ -1,0 +1,208 @@
+[
+  {
+    "step": "upgrade-v1-to-v2",
+    "details": {
+      "beans": 3,
+      "cups": 3,
+      "oldOriginalExists": "files/coffee-schema1-original.json",
+      "demo": true
+    }
+  },
+  {
+    "step": "first-cup",
+    "details": {
+      "bean": "1792632340185151",
+      "gramsTenths": 155,
+      "remainingTenths": 2345
+    }
+  },
+  {
+    "step": "reuse-before-save",
+    "details": {
+      "cups": 4,
+      "noteEmpty": true,
+      "grams": "15.5",
+      "noStockDeduction": true
+    }
+  },
+  {
+    "step": "reuse-saved",
+    "details": {
+      "cups": 5,
+      "remainingTenths": 2190,
+      "grams": 155,
+      "rating": 0
+    }
+  },
+  {
+    "step": "edit-cup",
+    "details": {
+      "remainingTenths": 2180
+    }
+  },
+  {
+    "step": "delete-cup",
+    "details": {
+      "cups": 4,
+      "remainingTenths": 2345
+    }
+  },
+  {
+    "step": "stock-correction",
+    "details": {
+      "before": 2345,
+      "after": 2001,
+      "cups": 4,
+      "beanCents": 15600
+    }
+  },
+  {
+    "step": "restart-with-photo-and-correction",
+    "details": {
+      "photo": "85c33298-aab8-422e-9467-d65b13af7980.jpg",
+      "after": 2001,
+      "cups": 4
+    }
+  },
+  {
+    "step": "system-zip-export",
+    "details": {
+      "files": [
+        "coffee-journal-v2-1792633032554.zip\r",
+        "coffee-qa-bag.jpg"
+      ]
+    }
+  },
+  {
+    "step": "photo-replaced",
+    "details": {
+      "photo": "314d2d5f-4ad0-4700-b29e-77d3e9e3c0c2.jpg",
+      "roaster": "QA_After_Backup"
+    }
+  },
+  {
+    "step": "system-zip-restore",
+    "details": {
+      "photo": "85c33298-aab8-422e-9467-d65b13af7980.jpg",
+      "cups": 4
+    }
+  },
+  {
+    "step": "undo-restores-records-and-photo",
+    "details": {
+      "photo": "314d2d5f-4ad0-4700-b29e-77d3e9e3c0c2.jpg",
+      "roaster": "QA_After_Backup",
+      "cups": 4
+    }
+  },
+  {
+    "step": "invalid-import-keeps-current",
+    "details": {
+      "beans": 3,
+      "cups": 4,
+      "photo": "314d2d5f-4ad0-4700-b29e-77d3e9e3c0c2.jpg"
+    }
+  },
+  {
+    "step": "legacy-json-restore",
+    "details": {
+      "cups": 3,
+      "beans": 2,
+      "photos": 0
+    }
+  },
+  {
+    "step": "undo-legacy-restore-keeps-photo",
+    "details": {
+      "photo": "314d2d5f-4ad0-4700-b29e-77d3e9e3c0c2.jpg"
+    }
+  },
+  {
+    "step": "final-release-upgrade",
+    "details": {
+      "retained": "photo, QA_After_Backup, corrected 200.1 g, linked first cup",
+      "mode": "non-debuggable release; UI verified"
+    }
+  },
+  {
+    "step": "direct-upgrade-v1-release-prepared",
+    "details": {
+      "device": "emulator-5588",
+      "build": "0.1.0 ARM64 release",
+      "synthetic": "2 demo beans and 3 demo notes"
+    }
+  },
+  {
+    "step": "direct-release-upgrade-succeeded",
+    "details": {
+      "device": "emulator-5588",
+      "path": "0.1.0 ARM64 release -> 0.2.0 ARM64 release",
+      "uninstalled": false,
+      "remaining": 235,
+      "demoFlagRetained": true
+    }
+  },
+  {
+    "step": "final-release-create-and-reuse",
+    "details": {
+      "parameters": "15.5 g / 240 g / 145 seconds",
+      "noteReset": true
+    }
+  },
+  {
+    "step": "final-release-edit",
+    "details": {
+      "grams": 16.5,
+      "correctionImpactConfirmed": true
+    }
+  },
+  {
+    "step": "final-release-delete",
+    "details": {
+      "record": "reused cup removed, first cup retained"
+    }
+  },
+  {
+    "step": "final-release-correct-restart",
+    "details": {
+      "remaining": 180.1
+    }
+  },
+  {
+    "step": "final-release-full-restore",
+    "details": {
+      "photoCountShown": 1,
+      "oldBagAndPhotoRestored": true,
+      "remaining": 200.1
+    }
+  },
+  {
+    "step": "final-release-undo",
+    "details": {
+      "replacedPhotoAndRoasterRestored": true
+    }
+  },
+  {
+    "step": "final-release-invalid-backup",
+    "details": {
+      "currentBeanAndPhotoPreserved": true
+    }
+  },
+  {
+    "step": "final-palette-apk-upgrade",
+    "details": {
+      "allDataRetained": true,
+      "defaultCanvasAndDisabledChipsCorrected": true
+    }
+  },
+  {
+    "step": "direct-release-upgrade-final-sha",
+    "details": {
+      "device": "emulator-5588",
+      "mode": "0.1.0 ARM64 release -> final 0.2.0 ARM64 release",
+      "apkSha256": "736d6849abd3ce1be6ccabd065a2eb726ba2b448060f59ee52cc23116bdd9b8d",
+      "remaining": 235,
+      "uninstalled": false
+    }
+  }
+]

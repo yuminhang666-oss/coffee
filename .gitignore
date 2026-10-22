@@ -50,6 +50,7 @@ app.*.map.json
 !deliverables/**/evidence/analyze.log
 !deliverables/**/evidence/tests.log
 !deliverables/**/evidence/build-release.log
+!deliverables/**/evidence/native-tests.log
 /deliverables/**/*.apk
 
 # Widget Preview related

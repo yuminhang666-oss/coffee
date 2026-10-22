@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
@@ -33,10 +34,41 @@ ThemeData coffeeTheme(Brightness b) {
         onSurfaceVariant: dark
             ? const Color(0xFFBEB0A2)
             : const Color(0xFF81756B),
+        secondary: dark ? const Color(0xFFD7B999) : const Color(0xFF88654B),
+        secondaryContainer: dark
+            ? const Color(0xFF493529)
+            : const Color(0xFFF0E1CE),
+        onSecondaryContainer: dark ? const Color(0xFFF3E8DB) : espresso,
+        tertiary: caramel,
+        surfaceContainerHighest: dark
+            ? const Color(0xFF392E27)
+            : const Color(0xFFF0E9DF),
+        surfaceContainerHigh: dark
+            ? const Color(0xFF302823)
+            : const Color(0xFFF4EEE5),
+        surfaceContainer: dark
+            ? const Color(0xFF28221E)
+            : const Color(0xFFFAF6EF),
+        surfaceContainerLow: dark
+            ? const Color(0xFF221D19)
+            : const Color(0xFFFFFDFA),
+        surfaceContainerLowest: dark ? const Color(0xFF171310) : cream,
+        surfaceTint: Colors.transparent,
       );
-  final base = ThemeData(brightness: b, useMaterial3: true);
+  final base = ThemeData(brightness: b, useMaterial3: true, colorScheme: scheme);
   return base.copyWith(
+    cupertinoOverrideTheme: CupertinoThemeData(
+      primaryColor: scheme.primary,
+      brightness: b,
+    ),
     colorScheme: scheme,
+    chipTheme: ChipThemeData(
+      backgroundColor: scheme.surface,
+      selectedColor: scheme.secondaryContainer,
+      disabledColor: scheme.surfaceContainerHigh,
+      labelStyle: TextStyle(color: scheme.onSurface),
+      side: BorderSide.none,
+    ),
     scaffoldBackgroundColor: dark ? const Color(0xFF1A1715) : cream,
     textTheme: base.textTheme.apply(
       bodyColor: scheme.onSurface,
@@ -84,6 +116,66 @@ ThemeData coffeeTheme(Brightness b) {
       showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+    ),
+  );
+}
+
+class BeanPhoto extends StatelessWidget {
+  final String photo;
+  final String? directory;
+  final bool thumbnail;
+  final double? width, height;
+  const BeanPhoto({
+    super.key,
+    required this.photo,
+    required this.directory,
+    this.thumbnail = true,
+    this.width,
+    this.height,
+  });
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(15),
+    child: SizedBox(
+      width: width,
+      height: height,
+      child: photo.isEmpty || directory == null
+          ? const ColoredBox(
+              color: Color(0xFFEDE1CE),
+              child: CoffeeArt(bean: true),
+            )
+          : Image.file(
+              File('$directory/${thumbnail ? 'thumb-' : ''}$photo'),
+              fit: BoxFit.cover,
+              cacheWidth: thumbnail ? 360 : 1600,
+              errorBuilder: (_, _, _) => const ColoredBox(
+                color: Color(0xFFEDE1CE),
+                child: CoffeeArt(bean: true),
+              ),
+            ),
+    ),
+  );
+}
+
+void showBeanPhoto(BuildContext context, String photo, String? directory) {
+  if (photo.isEmpty || directory == null) return;
+  Navigator.of(context).push(
+    CoffeeRoute(
+      context: context,
+      builder: (_) => Scaffold(
+        appBar: AppBar(title: const Text('豆袋照片')),
+        body: Center(
+          child: InteractiveViewer(
+            minScale: .8,
+            maxScale: 4,
+            child: BeanPhoto(
+              photo: photo,
+              directory: directory,
+              thumbnail: false,
+            ),
+          ),
+        ),
       ),
     ),
   );
