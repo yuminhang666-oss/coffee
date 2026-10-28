@@ -1,0 +1,46 @@
+00:00 +0: loading D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart
+00:00 +0: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Explicit schema 1 migration preserves every old field and ID
+00:00 +1: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Parameter reuse carries equipment only and resets completed-record fields
+00:00 +2: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Corrections remain independent across edit, move, delete, restart and finance
+00:00 +3: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Conflicting historical edit cannot truncate stock or discard corrections
+00:00 +4: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +5: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +6: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +7: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +8: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +9: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +10: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +11: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +12: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +13: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +14: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +15: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +16: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +17: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +18: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +19: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +20: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +21: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +22: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +23: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Repeated tenth-gram cups and adjustments have no accumulation error
+00:00 +24: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:00 +25: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:00 +26: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:00 +27: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:00 +28: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:01 +29: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: New cup requires visible temperature; invalid seconds/precision preserve draft and prevent writes
+00:01 +30: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Reused form consumes nothing before save and Back retains long feelings
+00:01 +31: D:/Codex/CampusFlow/.local/coffee/test/v020_test.dart: Reused form consumes nothing before save and Back retains long feelings
+00:02 +32: D:/Codex/CampusFlow/.local/coffee/test/widget_test.dart: Post-brew form validates required parameters and saves feelings
+00:02 +33: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:02 +34: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:02 +35: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:03 +36: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:03 +37: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:03 +38: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.light
+00:03 +39: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: 320px / 2x layout: bean editor, flavor selection, sensory and comparison Brightness.dark
+00:05 +40: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: Flavor browsing keeps 24 selected snapshots across category and origin changes
+00:05 +41: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: Custom vocabulary editor protects unsaved text and retains it on write failure
+00:06 +42: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: Restoring another bean collection clears an unavailable journal bean filter
+00:06 +43: D:/Codex/CampusFlow/.local/coffee/test/v030_test.dart: Deleting a cup shows actual stock-correction impact instead of an expression
+00:06 +44: All tests passed!

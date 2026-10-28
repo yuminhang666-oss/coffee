@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../core/controller.dart';
 import '../core/models.dart';
 import 'design.dart';
+import 'flavor_picker.dart';
 
 Future<bool> confirm(
   BuildContext context,
@@ -55,10 +56,8 @@ Future<bool?> editCup(
         CupEditor(controller: controller, cup: cup, bean: bean, reuse: reuse),
   ),
 );
-String gramsText(num g) =>
-    g == g.roundToDouble() ? g.toInt().toString() : g.toStringAsFixed(1);
 InputDecoration fieldLabel(String s) =>
-    InputDecoration(labelText: s, counterText: '');
+    InputDecoration(labelText: s, counterText: '', errorMaxLines: 3);
 Widget spaceTitle(CoffeeController controller, String title) => Text(
   '$title${controller.data.demo ? ' · 示例' : ''}',
   style: const TextStyle(fontSize: 18),
@@ -95,6 +94,7 @@ class _CupEditorState extends State<CupEditor> {
       grams,
       water,
       seconds,
+      minutes,
       note,
       shop,
       price;
@@ -104,8 +104,10 @@ class _CupEditorState extends State<CupEditor> {
   late String beanId, method;
   late DateTime at;
   late int rating;
-  late Set<String> tastes;
+  late Map<String, String> tastes;
   bool saving = false;
+  final recordId = newId();
+  bool reviewing = false;
   @override
   void initState() {
     super.initState();
@@ -116,9 +118,12 @@ class _CupEditorState extends State<CupEditor> {
             : null);
     name = TextEditingController(text: c?.name ?? '');
     grams = TextEditingController(text: c == null ? '' : gramsText(c.grams));
-    water = TextEditingController(text: c == null ? '' : c.water.toString());
+    water = TextEditingController(text: c == null ? '' : gramsText(c.water));
+    minutes = TextEditingController(
+      text: c == null ? '' : (c.seconds ~/ 60).toString(),
+    );
     seconds = TextEditingController(
-      text: c == null ? '' : c.seconds.toString(),
+      text: c == null ? '' : (c.seconds % 60).toString(),
     );
     note = TextEditingController(text: c?.note ?? '');
     shop = TextEditingController(text: c?.shop ?? '');
@@ -129,7 +134,11 @@ class _CupEditorState extends State<CupEditor> {
     method = c?.method ?? '手冲';
     at = c?.at ?? DateTime.now();
     rating = c?.rating ?? 0;
-    tastes = {...?c?.tastes};
+    tastes = {
+      if (c != null)
+        for (var i = 0; i < c.tastes.length; i++)
+          c.resolvedTasteIds[i]: c.tastes[i],
+    };
     temperature = TextEditingController(text: c?.temperature?.toString() ?? '');
     brewer = TextEditingController(text: c?.brewer ?? '');
     grinder = TextEditingController(text: c?.grinder ?? '');
@@ -142,6 +151,7 @@ class _CupEditorState extends State<CupEditor> {
     grams.text,
     water.text,
     seconds.text,
+    minutes.text,
     note.text,
     shop.text,
     price.text,
@@ -153,7 +163,7 @@ class _CupEditorState extends State<CupEditor> {
     method,
     at.toIso8601String(),
     rating,
-    ...(tastes.toList()..sort()),
+    ...tastes.entries.map((e) => '${e.key}:${e.value}'),
   ].join('|');
 
   Future<void> leave() async {
@@ -181,6 +191,7 @@ class _CupEditorState extends State<CupEditor> {
       grams,
       water,
       seconds,
+      minutes,
       note,
       shop,
       price,
@@ -195,10 +206,10 @@ class _CupEditorState extends State<CupEditor> {
   }
 
   Future<void> save() async {
-    if (saving || !form.currentState!.validate()) return;
+    if (saving || reviewing || !form.currentState!.validate()) return;
     final g = double.parse(grams.text),
-        w = int.parse(water.text),
-        s = int.parse(seconds.text);
+        w = parseTenths(water.text, max: 300000)! / 10,
+        s = parseDuration(minutes.text, seconds.text)!;
     final beans = widget.controller.data.beans.where((b) => b.id == beanId);
     final selected = beans.isEmpty ? null : beans.first;
     final available = selected == null
@@ -210,7 +221,7 @@ class _CupEditorState extends State<CupEditor> {
       return;
     }
     final c = Cup(
-      id: widget.cup?.id ?? newId(),
+      id: widget.cup?.id ?? recordId,
       name: selected?.name ?? name.text.trim(),
       at: at,
       method: method,
@@ -220,7 +231,8 @@ class _CupEditorState extends State<CupEditor> {
       seconds: s,
       note: note.text.trim(),
       rating: rating,
-      tastes: tastes.toList(),
+      tastes: tastes.values.toList(),
+      tasteIds: tastes.keys.toList(),
       shop: shop.text.trim(),
       cents: parseMoney(price.text)!,
       favorite: widget.cup?.favorite ?? false,
@@ -236,15 +248,22 @@ class _CupEditorState extends State<CupEditor> {
             ct.data.copy(cups: [c, ...ct.data.cups.where((x) => x.id != c.id)]),
             {beanId, widget.cup?.beanId ?? ''},
           );
-    if (impact.isNotEmpty &&
-        !await confirm(context, '核对校正后的余量', impact, action: '确认保存')) {
-      return;
+    if (impact.isNotEmpty) {
+      reviewing = true;
+      final accepted = await confirm(
+        context,
+        '核对校正后的余量',
+        impact,
+        action: '确认保存',
+      );
+      reviewing = false;
+      if (!accepted) return;
     }
     if (!mounted) return;
     setState(() => saving = true);
     final ok = await widget.controller.saveCup(c);
     if (!mounted) return;
-    setState(() => saving = false);
+    setState(() => saving = ok);
     if (ok) {
       setState(() => allowPop = true);
       HapticFeedback.lightImpact();
@@ -260,7 +279,7 @@ class _CupEditorState extends State<CupEditor> {
   Widget build(BuildContext c) {
     final beans = widget.controller.data.beans;
     final g = double.tryParse(grams.text) ?? 0,
-        w = int.tryParse(water.text) ?? 0;
+        w = (parseTenths(water.text, max: 300000) ?? 0) / 10;
     return PopScope(
       canPop: allowPop,
       onPopInvokedWithResult: (didPop, _) {
@@ -303,7 +322,7 @@ class _CupEditorState extends State<CupEditor> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 14),
                   child: Text(
-                    '已沿用上次参数 · 日期为今天，请填写这次的感受',
+                    '已沿用所选参数 · 日期为今天，请填写这次的感受',
                     style: TextStyle(color: muted(c), fontSize: 12),
                   ),
                 ),
@@ -358,8 +377,7 @@ class _CupEditorState extends State<CupEditor> {
                 builder: (c, box) {
                   final fields = [
                     _number(grams, '粉量 / g', decimal: true, max: 1000),
-                    _number(water, '注水 / g', max: 30000),
-                    _number(seconds, '时长 / 秒', max: 86400),
+                    _number(water, '注水 / g', decimal: true, max: 30000),
                   ];
                   return box.maxWidth < 330 ||
                           MediaQuery.textScalerOf(c).scale(1) > 1.3
@@ -383,10 +401,66 @@ class _CupEditorState extends State<CupEditor> {
                         );
                 },
               ),
+              const SizedBox(height: 12),
+              const Text('冲煮总时长（含滴滤）'),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: minutes,
+                      keyboardType: TextInputType.number,
+                      decoration: fieldLabel('分'),
+                      onChanged: (_) => setState(() {}),
+                      validator: (_) =>
+                          durationError(minutes.text, seconds.text),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextFormField(
+                      controller: seconds,
+                      keyboardType: TextInputType.number,
+                      decoration: fieldLabel('秒（0–59）'),
+                      onChanged: (_) => setState(() {}),
+                      validator: (v) =>
+                          v!.trim().isEmpty ||
+                              (RegExp(r'^\d+$').hasMatch(v.trim()) &&
+                                  int.tryParse(v.trim()) != null &&
+                                  int.parse(v.trim()) <= 59)
+                          ? null
+                          : '秒须为 0–59 的整数',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: temperature,
+                keyboardType: TextInputType.number,
+                decoration: fieldLabel('水温 / °C'),
+                validator: (v) {
+                  if (v!.trim().isEmpty) {
+                    return widget.cup != null && widget.cup!.temperature == null
+                        ? null
+                        : '请填写实际水温';
+                  }
+                  final n = int.tryParse(v.trim());
+                  return RegExp(r'^\d+$').hasMatch(v.trim()) &&
+                          n != null &&
+                          n >= 0 &&
+                          n <= 100
+                      ? null
+                      : '请输入 0–100 °C 整数';
+                },
+              ),
+              if (widget.cup != null && widget.cup!.temperature == null)
+                const Text('旧记录水温未记录，可留空。', style: TextStyle(fontSize: 12)),
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
-                  g > 0 && w > 0
+                  g > 0 && g.isFinite && w > 0
                       ? '粉水比  1 : ${(w / g).toStringAsFixed(1)}'
                       : '填写粉量和注水量，自动计算粉水比',
                   style: TextStyle(fontSize: 12, color: muted(c)),
@@ -425,18 +499,31 @@ class _CupEditorState extends State<CupEditor> {
                 ],
               ),
               const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  final matches = widget.controller.data.beans.where(
+                    (b) => b.id == beanId,
+                  );
+                  final bean = matches.isEmpty ? null : matches.first;
+                  final result = await pickFlavors(
+                    c,
+                    widget.controller,
+                    tastes,
+                    roast: bean?.roast ?? 'light',
+                    country: bean?.country ?? '',
+                  );
+                  if (result != null && mounted) {
+                    setState(() => tastes = result);
+                  }
+                },
+                icon: const Icon(Icons.local_florist_outlined),
+                label: Text('这一杯我喝到的风味（${tastes.length}）'),
+              ),
               Wrap(
                 spacing: 8,
-                runSpacing: 4,
+                runSpacing: 6,
                 children: [
-                  for (final t in flavors)
-                    FilterChip(
-                      label: Text(t),
-                      selected: tastes.contains(t),
-                      onSelected: (v) =>
-                          setState(() => v ? tastes.add(t) : tastes.remove(t)),
-                      showCheckmark: false,
-                    ),
+                  for (final e in tastes.entries) FlavorTag(e.value, id: e.key),
                 ],
               ),
               const SizedBox(height: 18),
@@ -462,19 +549,6 @@ class _CupEditorState extends State<CupEditor> {
                 title: const Text('更多参数（选填）', style: TextStyle(fontSize: 14)),
                 childrenPadding: const EdgeInsets.only(bottom: 20),
                 children: [
-                  TextFormField(
-                    controller: temperature,
-                    keyboardType: TextInputType.number,
-                    decoration: fieldLabel('水温 / °C（选填）'),
-                    validator: (v) =>
-                        v!.isEmpty ||
-                            (int.tryParse(v) != null &&
-                                int.parse(v) >= 1 &&
-                                int.parse(v) <= 100)
-                        ? null
-                        : '请输入 1–100 °C',
-                  ),
-                  const SizedBox(height: 12),
                   TextFormField(
                     controller: brewer,
                     maxLength: 80,
@@ -536,10 +610,7 @@ class _CupEditorState extends State<CupEditor> {
   }) => TextFormField(
     controller: controller,
     keyboardType: TextInputType.numberWithOptions(decimal: decimal),
-    inputFormatters: [
-      FilteringTextInputFormatter.allow(RegExp(decimal ? r'[0-9.]' : r'[0-9]')),
-    ],
-    maxLength: 7,
+
     decoration: fieldLabel(label),
     onChanged: (_) => setState(() {}),
     validator: (v) {
@@ -548,8 +619,8 @@ class _CupEditorState extends State<CupEditor> {
               !n.isFinite ||
               n <= 0 ||
               n > max ||
-              (decimal && (n * 10 - (n * 10).round()).abs() > .00001)
-          ? (decimal ? '填 0.1–$max' : '填 1–$max')
+              (decimal && parseTenths(v ?? '', min: 1, max: max * 10) == null)
+          ? (decimal ? '填 0.1–$max，最多一位小数' : '填 1–$max')
           : null;
     },
   );
@@ -565,6 +636,17 @@ class BeanEditor extends StatefulWidget {
 
 class _BeanEditorState extends State<BeanEditor> {
   final form = GlobalKey<FormState>();
+  final selectedVarieties = <String>{};
+  static const varietyChoices = [
+    '瑰夏',
+    '波旁',
+    '铁皮卡',
+    '卡杜拉',
+    '卡杜艾',
+    'SL28',
+    'SL34',
+    '74110',
+  ];
   late final TextEditingController name,
       origin,
       roaster,
@@ -572,6 +654,9 @@ class _BeanEditorState extends State<BeanEditor> {
       note,
       weight,
       price;
+  late final TextEditingController country, region, farm, station, variety;
+  late Map<String, String> bagFlavors;
+  bool originReviewed = false;
   late String roast;
   late String photo;
   late String initialDraft;
@@ -584,6 +669,21 @@ class _BeanEditorState extends State<BeanEditor> {
     final b = widget.bean;
     name = TextEditingController(text: b?.name ?? '');
     origin = TextEditingController(text: b?.origin ?? '');
+    country = TextEditingController(text: b?.country ?? '');
+    region = TextEditingController(text: b?.region ?? '');
+    farm = TextEditingController(text: b?.farm ?? '');
+    station = TextEditingController(text: b?.station ?? '');
+    variety = TextEditingController();
+    bagFlavors = {
+      if (b != null)
+        for (var i = 0; i < b.bagFlavors.length; i++)
+          b.bagFlavorIds.isEmpty
+                  ? builtInFlavorId(b.bagFlavors[i])
+                  : b.bagFlavorIds[i]:
+              b.bagFlavors[i],
+    };
+    selectedVarieties.addAll(b?.varieties ?? []);
+    originReviewed = b?.originReviewed ?? false;
     roaster = TextEditingController(text: b?.roaster ?? '');
     process = TextEditingController(text: b?.process ?? '');
     note = TextEditingController(text: b?.note ?? '');
@@ -591,8 +691,8 @@ class _BeanEditorState extends State<BeanEditor> {
     price = TextEditingController(
       text: b == null || b.cents == 0 ? '' : money(b.cents),
     );
-    roast = b?.roast ?? '浅烘';
-    boughtAt = b?.boughtAt ?? DateTime.now();
+    roast = roastId(b?.roast ?? 'light');
+    boughtAt = b == null ? DateTime.now() : b.boughtAt;
     roastedAt = b?.roastedAt;
     photo = b?.photo ?? '';
     initialDraft = draft;
@@ -601,6 +701,14 @@ class _BeanEditorState extends State<BeanEditor> {
   String get draft => [
     name.text,
     origin.text,
+    country.text,
+    region.text,
+    farm.text,
+    station.text,
+    variety.text,
+    ...selectedVarieties,
+    ...bagFlavors.entries.map((e) => '${e.key}:${e.value}'),
+    originReviewed,
     roaster.text,
     process.text,
     note.text,
@@ -644,7 +752,20 @@ class _BeanEditorState extends State<BeanEditor> {
 
   @override
   void dispose() {
-    for (final t in [name, origin, roaster, process, note, weight, price]) {
+    for (final t in [
+      name,
+      origin,
+      country,
+      region,
+      farm,
+      station,
+      variety,
+      roaster,
+      process,
+      note,
+      weight,
+      price,
+    ]) {
       t.dispose();
     }
     super.dispose();
@@ -657,7 +778,20 @@ class _BeanEditorState extends State<BeanEditor> {
       Bean(
         id: widget.bean?.id ?? newId(),
         name: name.text.trim(),
-        origin: origin.text.trim(),
+        origin: widget.bean?.origin ?? '',
+        country: country.text.trim(),
+        region: region.text.trim(),
+        farm: farm.text.trim(),
+        station: station.text.trim(),
+        varieties: {
+          ...selectedVarieties,
+          if (variety.text.trim().isNotEmpty) variety.text.trim(),
+        }.toList(),
+        bagFlavors: bagFlavors.values.toList(),
+        bagFlavorIds: bagFlavors.keys.toList(),
+        sensory:
+            widget.bean?.sensory ?? const [null, null, null, null, null, null],
+        originReviewed: originReviewed,
         roaster: roaster.text.trim(),
         roast: roast,
         process: process.text.trim(),
@@ -670,7 +804,7 @@ class _BeanEditorState extends State<BeanEditor> {
       ),
     );
     if (!mounted) return;
-    setState(() => saving = false);
+    setState(() => saving = ok);
     if (ok) {
       setState(() => allowPop = true);
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -755,16 +889,72 @@ class _BeanEditorState extends State<BeanEditor> {
             const SizedBox(height: 14),
             _text(roaster, '烘焙商（选填）'),
             const SizedBox(height: 14),
-            _text(origin, '产地 / 庄园（选填）'),
+            const SectionTitle('产地信息'),
+            _text(country, '国家或地区（可填未知、拼配或其他国家）'),
+            const SizedBox(height: 14),
+            _text(region, '具体产区', max: 160),
+            const SizedBox(height: 14),
+            _text(farm, '庄园／农场／合作社（选填）', max: 160),
+            const SizedBox(height: 14),
+            _text(station, '处理站（选填）', max: 160),
+            if (origin.text.isNotEmpty)
+              ExpansionTile(
+                initiallyExpanded: !originReviewed,
+                title: const Text('原产地信息（迁移原文）'),
+                children: [
+                  SelectableText(origin.text),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('已整理，可收起原文'),
+                    value: originReviewed,
+                    onChanged: (v) => setState(() => originReviewed = v!),
+                  ),
+                ],
+              ),
+            const SectionTitle('豆子信息'),
+            Text('豆种／品种（多选，也可自定义）', style: TextStyle(color: muted(c))),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final v in {...varietyChoices, ...selectedVarieties})
+                  FilterChip(
+                    label: Text(v),
+                    selected: selectedVarieties.contains(v),
+                    onSelected: (_) => setState(
+                      () => selectedVarieties.contains(v)
+                          ? selectedVarieties.remove(v)
+                          : selectedVarieties.add(v),
+                    ),
+                  ),
+              ],
+            ),
+            TextFormField(
+              controller: variety,
+              maxLength: 80,
+              decoration: fieldLabel('自定义品种（填写后点添加）'),
+            ),
+            TextButton(
+              onPressed: () {
+                final v = variety.text.trim();
+                if (v.isNotEmpty && selectedVarieties.length < 20) {
+                  setState(() {
+                    selectedVarieties.add(v);
+                    variety.clear();
+                  });
+                }
+              },
+              child: const Text('添加品种'),
+            ),
             const SizedBox(height: 20),
             Text('烘焙程度', style: TextStyle(fontSize: 13, color: muted(c))),
             const SizedBox(height: 10),
             Wrap(
               spacing: 10,
               children: [
-                for (final r in ['浅烘', '中烘', '深烘'])
+                for (final r in roastChoices)
                   ChoiceChip(
-                    label: Text(r),
+                    label: Text(roastName(r)),
                     selected: roast == r,
                     onSelected: (_) => setState(() => roast = r),
                     showCheckmark: false,
@@ -772,25 +962,36 @@ class _BeanEditorState extends State<BeanEditor> {
               ],
             ),
             const SizedBox(height: 16),
-            _text(process, '处理法（选填，如水洗、日晒、厌氧）'),
+            _text(process, '处理法（保留原文，可自定义）', max: 300),
+            Wrap(
+              spacing: 6,
+              children: [
+                for (final p in ['水洗', '日晒', '蜜处理', '厌氧发酵'])
+                  ActionChip(
+                    label: Text(p),
+                    onPressed: () => setState(() => process.text = p),
+                  ),
+              ],
+            ),
+            const Text(
+              '烘焙程度是记录标签，不代表跨烘焙商统一量化标准。',
+              style: TextStyle(fontSize: 12),
+            ),
             const SectionTitle('购入信息'),
             TextFormField(
               controller: weight,
               decoration: fieldLabel('购入净重 / g'),
-              maxLength: 7,
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+
               validator: (v) {
                 final n = double.tryParse(v ?? '');
                 return n == null ||
                         !n.isFinite ||
                         n < .1 ||
                         n > 50000 ||
-                        (n * 10 - (n * 10).round()).abs() > .00001
+                        parseTenths(v ?? '', min: 1, max: 500000) == null
                     ? '请输入 0.1–50000 g，最多一位小数'
                     : null;
               },
@@ -812,14 +1013,38 @@ class _BeanEditorState extends State<BeanEditor> {
               roastedAt,
               (v) => setState(() => roastedAt = v),
             ),
-            const SectionTitle('给这袋豆子留句话'),
+            const SectionTitle('风味与感受'),
+            OutlinedButton(
+              onPressed: () async {
+                final result = await pickFlavors(
+                  c,
+                  widget.controller,
+                  bagFlavors,
+                  roast: roast,
+                  country: country.text.trim(),
+                );
+                if (result != null && mounted) {
+                  setState(() => bagFlavors = result);
+                }
+              },
+              child: const Text('豆袋标注风味（与每杯实际风味分开）'),
+            ),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final e in bagFlavors.entries)
+                  FlavorTag(e.value, id: e.key),
+              ],
+            ),
+            const SizedBox(height: 12),
             TextFormField(
               controller: note,
               minLines: 3,
               maxLines: 6,
               maxLength: 2000,
               decoration: const InputDecoration(
-                hintText: '包装上的风味、购买时的期待，或者任何想记住的事。',
+                hintText: '备注、购买时的期待，或者任何想记住的事。',
                 hintStyle: TextStyle(fontSize: 13, height: 1.7),
               ),
             ),
@@ -837,9 +1062,10 @@ class _BeanEditorState extends State<BeanEditor> {
     TextEditingController t,
     String label, {
     bool required = false,
+    int max = 80,
   }) => TextFormField(
     controller: t,
-    maxLength: 80,
+    maxLength: max,
     decoration: fieldLabel(label),
     validator: (v) => required && v!.trim().isEmpty ? '请填写咖啡豆名称' : null,
   );
@@ -909,6 +1135,7 @@ class _StockEditorState extends State<StockEditor> {
 
   Future<void> save() async {
     if (saving || !form.currentState!.validate()) return;
+    setState(() => saving = true);
     final before = widget.controller.data.remaining(widget.bean);
     final after = double.parse(amount.text);
     if (!await confirm(
@@ -917,6 +1144,7 @@ class _StockEditorState extends State<StockEditor> {
       '余量 ${gramsText(before)} → ${gramsText(after)} g。\n原因：${reason.text.trim()}\n这是一条独立校正，不改变杯数、历史用量或购豆支出。',
       action: '保存校正',
     )) {
+      if (mounted) setState(() => saving = false);
       return;
     }
     if (!mounted) return;
@@ -927,7 +1155,7 @@ class _StockEditorState extends State<StockEditor> {
       reason.text.trim(),
     );
     if (!mounted) return;
-    setState(() => saving = false);
+    setState(() => saving = ok);
     if (ok) {
       Navigator.pop(context);
     } else {
@@ -964,7 +1192,8 @@ class _StockEditorState extends State<StockEditor> {
                       !n.isFinite ||
                       n < 0 ||
                       n > widget.bean.weight ||
-                      (n * 10 - (n * 10).round()).abs() > .00001
+                      parseTenths(v ?? '', max: widget.bean.weightTenths) ==
+                          null
                   ? '填 0–${gramsText(widget.bean.weight)} g，最多一位小数'
                   : null;
             },

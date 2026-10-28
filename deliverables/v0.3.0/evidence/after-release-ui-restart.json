@@ -1,0 +1,423 @@
+{
+  "app": "coffee-journal",
+  "schema": 3,
+  "customFlavors": [
+    {
+      "id": "custom-1793167368379727",
+      "label": "QA_rose",
+      "group": "floral",
+      "active": true
+    },
+    {
+      "id": "custom-qa-berry",
+      "label": "QA berry syrup",
+      "group": "berry",
+      "active": true
+    }
+  ],
+  "adjustments": [],
+  "cups": [
+    {
+      "id": "1793167024404806",
+      "name": "QA Synthetic Bag light",
+      "at": "2026-10-28T05:57:04.404822",
+      "method": "手冲",
+      "shop": "",
+      "note": "QA_second_cup",
+      "beanId": "qa-b0",
+      "cents": 0,
+      "rating": 0,
+      "gramsTenths": 156,
+      "waterTenths": 2405,
+      "seconds": 45,
+      "favorite": false,
+      "tastes": [
+        "茉莉",
+        "QA_rose"
+      ],
+      "tasteIds": [
+        "f-8309-8389",
+        "custom-1793167368379727"
+      ],
+      "brewer": "",
+      "grinder": "",
+      "grind": "",
+      "temperature": 93
+    },
+    {
+      "id": "1793166902554838",
+      "name": "QA Synthetic Bag light",
+      "at": "2026-10-28T05:55:02.554849",
+      "method": "手冲",
+      "shop": "",
+      "note": "QA_first_cup",
+      "beanId": "qa-b0",
+      "cents": 0,
+      "rating": 0,
+      "gramsTenths": 155,
+      "waterTenths": 2405,
+      "seconds": 150,
+      "favorite": false,
+      "tastes": [],
+      "tasteIds": [],
+      "brewer": "",
+      "grinder": "",
+      "grind": "",
+      "temperature": 0
+    },
+    {
+      "id": "demo-c1",
+      "name": "一杯花香，慢慢醒来",
+      "at": "2026-10-28T05:50:00.001175",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：轻盈的柑橘酸，放凉后有淡淡的茉莉花香。",
+      "beanId": "demo-b1",
+      "cents": 0,
+      "rating": 5,
+      "gramsTenths": 150,
+      "waterTenths": 2250,
+      "seconds": 150,
+      "favorite": true,
+      "tastes": [
+        "花香",
+        "柑橘",
+        "茶感"
+      ],
+      "tasteIds": [
+        "f-82b1-9999",
+        "f-67d1-6a58",
+        "f-8336-611f"
+      ],
+      "brewer": "",
+      "grinder": "",
+      "grind": "",
+      "temperature": null
+    },
+    {
+      "id": "demo-c2",
+      "name": "午后，给自己留一杯",
+      "at": "2026-10-27T05:50:00.001175",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：坚果和奶油的香气，口感圆润。",
+      "beanId": "demo-b2",
+      "cents": 0,
+      "rating": 4,
+      "gramsTenths": 180,
+      "waterTenths": 2700,
+      "seconds": 165,
+      "favorite": false,
+      "tastes": [
+        "坚果",
+        "奶油"
+      ],
+      "tasteIds": [
+        "f-575a-679c",
+        "f-5976-6cb9"
+      ],
+      "brewer": "",
+      "grinder": "",
+      "grind": "",
+      "temperature": null
+    },
+    {
+      "id": "demo-c3",
+      "name": "留一点可可的余韵",
+      "at": "2026-10-25T05:50:00.001175",
+      "method": "手冲",
+      "shop": "在家冲煮",
+      "note": "示例记录：可可香气明显，下次试试再细一点的研磨。",
+      "beanId": "demo-b2",
+      "cents": 0,
+      "rating": 4,
+      "gramsTenths": 150,
+      "waterTenths": 2250,
+      "seconds": 140,
+      "favorite": false,
+      "tastes": [
+        "可可",
+        "焦糖"
+      ],
+      "tasteIds": [
+        "f-53ef-53ef",
+        "f-7126-7cd6"
+      ],
+      "brewer": "",
+      "grinder": "",
+      "grind": "",
+      "temperature": null
+    }
+  ],
+  "beans": [
+    {
+      "id": "demo-b1",
+      "name": "耶加雪菲 · 花见",
+      "origin": "埃塞俄比亚",
+      "roast": "light",
+      "country": "",
+      "region": "",
+      "farm": "",
+      "station": "",
+      "varieties": [],
+      "bagFlavors": [],
+      "bagFlavorIds": [],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "晨间烘焙（示例）",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-23T00:00:00.000"
+    },
+    {
+      "id": "demo-b2",
+      "name": "山野拼配",
+      "origin": "巴西 / 哥伦比亚",
+      "roast": "medium",
+      "country": "",
+      "region": "",
+      "farm": "",
+      "station": "",
+      "varieties": [],
+      "bagFlavors": [],
+      "bagFlavorIds": [],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "日晒",
+      "note": "",
+      "roaster": "山野烘焙（示例）",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 6800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": null
+    },
+    {
+      "id": "qa-b0",
+      "name": "QA Synthetic Bag light",
+      "origin": "",
+      "roast": "light",
+      "country": "埃塞俄比亚",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [
+        "74110"
+      ],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        0,
+        1,
+        5,
+        10,
+        null,
+        6
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    },
+    {
+      "id": "qa-b1",
+      "name": "QA Synthetic Bag ultraLight",
+      "origin": "",
+      "roast": "ultraLight",
+      "country": "未知",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    },
+    {
+      "id": "qa-b2",
+      "name": "QA Synthetic Bag mediumLight",
+      "origin": "",
+      "roast": "mediumLight",
+      "country": "未知",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    },
+    {
+      "id": "qa-b3",
+      "name": "QA Synthetic Bag medium",
+      "origin": "",
+      "roast": "medium",
+      "country": "未知",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    },
+    {
+      "id": "qa-b4",
+      "name": "QA Synthetic Bag mediumDark",
+      "origin": "",
+      "roast": "mediumDark",
+      "country": "未知",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    },
+    {
+      "id": "qa-b5",
+      "name": "QA Synthetic Bag dark",
+      "origin": "",
+      "roast": "dark",
+      "country": "未知",
+      "region": "QA region",
+      "farm": "QA farm / cooperative",
+      "station": "QA station",
+      "varieties": [],
+      "bagFlavors": [
+        "茉莉"
+      ],
+      "bagFlavorIds": [
+        "f-8309-8389"
+      ],
+      "sensory": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "originReviewed": false,
+      "process": "水洗",
+      "note": "示例豆单，可在正式空间记录自己的豆子。",
+      "roaster": "QA synthetic roaster",
+      "weightTenths": 2500,
+      "photo": "",
+      "cents": 8800,
+      "boughtAt": "2026-10-28T05:50:00.001175",
+      "roastedAt": "2026-10-24T12:00:00.000"
+    }
+  ],
+  "onboarded": true,
+  "demo": true,
+  "theme": "system"
+}

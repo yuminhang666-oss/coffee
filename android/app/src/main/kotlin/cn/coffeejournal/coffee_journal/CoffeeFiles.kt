@@ -48,8 +48,11 @@ class CoffeeFiles(private val root: File, private val cache: File, private val r
     }
     fun preserveMigration() {
         val original = read() ?: return
-        val migration = AtomicFile(File(root, "coffee-schema1-original.json"))
+        val schema = JSONObject(original).getInt("schema")
+        require(schema in 1..2)
+        val migration = AtomicFile(File(root, "coffee-schema${schema}-original.json"))
         if (!exists(migration)) atomic(migration, original.toByteArray(Charsets.UTF_8))
+        else require(migration.baseFile.isFile || File(migration.baseFile.path + ".bak").isFile) { "迁移前原始存档无法保留" }
     }
     fun write(json: String, preserve: Boolean) {
         val bytes = json.toByteArray(Charsets.UTF_8)
@@ -63,7 +66,7 @@ class CoffeeFiles(private val root: File, private val cache: File, private val r
     }
     private fun refs(json: String): Set<String> {
         val data = JSONObject(json)
-        require(data.getString("app") == "coffee-journal" && data.getInt("schema") in 1..2) { "不支持的备份版本" }
+        require(data.getString("app") == "coffee-journal" && data.get("schema") in listOf(1, 2, 3)) { "不支持的备份版本" }
         val beans = data.getJSONArray("beans")
         require(beans.length() <= 2000)
         val photos = mutableSetOf<String>()
@@ -187,7 +190,7 @@ class CoffeeFiles(private val root: File, private val cache: File, private val r
             val manifest = JSONObject(File(stage, "backup.json").readText(Charsets.UTF_8))
             require(manifest.getString("app") == "coffee-journal-backup" && manifest.get("version") == 2) { "不支持的完整备份版本" }
             val json = File(stage, "data.json").readText(Charsets.UTF_8)
-            require(JSONObject(json).get("schema") == 2) { "完整备份数据版本无效" }
+            require(JSONObject(json).get("schema") in listOf(2, 3)) { "完整备份数据版本无效" }
             val names = imageFiles(json)
             require(manifest.get("photos") == refs(json).size && seen == names.map { "photos/$it" }.toSet() + setOf("backup.json", "data.json")) { "照片缺失、数量不符或非法引用" }
             for (name in names) {

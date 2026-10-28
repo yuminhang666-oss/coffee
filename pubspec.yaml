@@ -1,7 +1,7 @@
 name: coffee_journal
 description: 离线豆仓与冲煮后咖啡手记
 publish_to: none
-version: 0.2.0+2
+version: 0.3.0+3
 environment:
   sdk: ^3.13.5
 dependencies:

@@ -1,0 +1,12 @@
+{
+  "synthetic": true,
+  "from": "0.2.0+2",
+  "to": "0.3.0+3",
+  "installation": "release install -r without uninstall",
+  "sourceSchema": 2,
+  "targetSchema": 3,
+  "beans": 2,
+  "cups": 3,
+  "allOldFieldsPreserved": true,
+  "newFieldsNotInferred": true
+}

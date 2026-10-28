@@ -55,3 +55,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Release assets live on GitHub Releases, not in source history.
+/deliverables/v0.3.0/CoffeeJournal-0.3.0-source.zip
+/deliverables/v0.3.0/CoffeeJournal-0.3.0-changes.patch

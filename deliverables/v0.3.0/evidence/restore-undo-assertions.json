@@ -1,0 +1,11 @@
+{
+  "synthetic": true,
+  "schema": 3,
+  "schema1UndoExact": true,
+  "schema2UndoExact": true,
+  "photoBytesIdentical": true,
+  "vocabularyAndSensoryIdentical": true,
+  "renamedInactiveCustomKeepsHistoricalText": true,
+  "favoriteReuseDidNotAddCupOrDebitStock": true,
+  "remainingTenths": 2189
+}

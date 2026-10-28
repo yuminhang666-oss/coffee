@@ -4,6 +4,9 @@ import '../core/controller.dart';
 import '../core/models.dart';
 import 'design.dart';
 import 'editors.dart';
+import 'flavor_picker.dart';
+import 'sensory.dart';
+import 'history_compare.dart';
 
 class CoffeeRoot extends StatefulWidget {
   final CoffeeController controller;
@@ -304,7 +307,14 @@ class Pantry extends StatefulWidget {
 }
 
 class _PantryState extends State<Pantry> {
-  String filter = '在喝', query = '';
+  String filter = '在喝', query = '', roastFilter = '';
+  final search = TextEditingController();
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext c) {
     final ct = widget.controller, d = ct.data;
@@ -313,11 +323,12 @@ class _PantryState extends State<Pantry> {
     final bs = d.beans
         .where(
           (b) =>
+              (roastFilter.isEmpty || roastId(b.roast) == roastFilter) &&
               (filter == '全部' ||
                   (filter == '在喝'
                       ? d.remaining(b) > 0
                       : d.remaining(b) == 0)) &&
-              '${b.name} ${b.origin} ${b.roaster} ${b.process}'
+              '${b.name} ${b.origin} ${b.country} ${b.region} ${b.farm} ${b.station} ${b.varieties.join(' ')} ${b.roaster} ${b.process}'
                   .toLowerCase()
                   .contains(query.toLowerCase()),
         )
@@ -381,14 +392,38 @@ class _PantryState extends State<Pantry> {
         ),
         const SizedBox(height: 12),
         TextField(
+          controller: search,
           decoration: InputDecoration(
-            hintText: '找豆子、产地或烘焙商',
+            hintText: '找名称、产地、庄园、品种或烘焙商',
             hintStyle: TextStyle(fontSize: 12, color: muted(c)),
             prefixIcon: const Icon(Icons.search_rounded, size: 20),
             isDense: true,
           ),
           onChanged: (v) => setState(() => query = v),
         ),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<String>(
+          key: ValueKey(roastFilter),
+          initialValue: roastFilter,
+          isExpanded: true,
+          decoration: fieldLabel('烘焙程度筛选'),
+          items: [
+            const DropdownMenuItem(value: '', child: Text('全部烘焙程度')),
+            for (final id in roastChoices)
+              DropdownMenuItem(value: id, child: Text(roastName(id))),
+          ],
+          onChanged: (v) => setState(() => roastFilter = v!),
+        ),
+        if (query.isNotEmpty || roastFilter.isNotEmpty || filter != '在喝')
+          TextButton(
+            onPressed: () => setState(() {
+              query = '';
+              search.clear();
+              roastFilter = '';
+              filter = '在喝';
+            }),
+            child: const Text('清除搜索与筛选'),
+          ),
         const SizedBox(height: 18),
         if (bs.isEmpty)
           EmptyState(
@@ -487,7 +522,7 @@ class BeanCard extends StatelessWidget {
                         spacing: 6,
                         runSpacing: 6,
                         children: [
-                          Tag(bean.roast),
+                          Tag(roastName(bean.roast)),
                           if (bean.process.isNotEmpty) Tag(bean.process),
                         ],
                       ),
@@ -500,6 +535,14 @@ class BeanCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (roastDays(bean, DateTime.now()) != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  '烘焙后第 ${roastDays(bean, DateTime.now())} 天',
+                  style: TextStyle(color: muted(c), fontSize: 12),
+                ),
+              ),
             const SizedBox(height: 19),
             Row(
               children: [
@@ -602,20 +645,50 @@ class BeanDetail extends StatelessWidget {
               style: const TextStyle(fontSize: 29, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                Tag(b.roast),
-                if (b.origin.isNotEmpty) Tag(b.origin),
-                if (b.process.isNotEmpty) Tag(b.process),
-              ],
+
+            const SectionTitle('基本信息'),
+            Surface(
+              child: _fact(c, '烘焙商', b.roaster.isEmpty ? '未填写' : b.roaster),
             ),
-            const SizedBox(height: 24),
+            const SectionTitle('产地信息'),
             Surface(
               child: Column(
                 children: [
-                  _fact(c, '烘焙商', b.roaster.isEmpty ? '未填写' : b.roaster),
+                  _fact(c, '国家或地区', b.country.isEmpty ? '未填写' : b.country),
+                  _fact(c, '具体产区', b.region.isEmpty ? '未填写' : b.region),
+                  _fact(c, '庄园／农场／合作社', b.farm.isEmpty ? '未填写' : b.farm),
+                  _fact(c, '处理站', b.station.isEmpty ? '未填写' : b.station),
+                  if (b.origin.isNotEmpty)
+                    ExpansionTile(
+                      initiallyExpanded: !b.originReviewed,
+                      tilePadding: EdgeInsets.zero,
+                      title: const Text(
+                        '原产地信息',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      children: [SelectableText(b.origin)],
+                    ),
+                ],
+              ),
+            ),
+            const SectionTitle('豆子信息'),
+            Surface(
+              child: Column(
+                children: [
+                  _fact(
+                    c,
+                    '豆种／品种',
+                    b.varieties.isEmpty ? '未填写' : b.varieties.join('、'),
+                  ),
+                  _fact(c, '处理法', b.process.isEmpty ? '未填写' : b.process),
+                  _fact(c, '烘焙程度', roastName(b.roast)),
+                ],
+              ),
+            ),
+            const SectionTitle('批次与购入'),
+            Surface(
+              child: Column(
+                children: [
                   _fact(
                     c,
                     '购入 / 剩余',
@@ -635,6 +708,37 @@ class BeanDetail extends StatelessWidget {
                 ],
               ),
             ),
+            if (roastDays(b, DateTime.now()) != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text('烘焙后第 ${roastDays(b, DateTime.now())} 天'),
+              ),
+            const SectionTitle('豆袋标注风味'),
+            b.bagFlavors.isEmpty
+                ? const Text('未填写')
+                : Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (var i = 0; i < b.bagFlavors.length; i++)
+                        FlavorTag(
+                          b.bagFlavors[i],
+                          id: b.bagFlavorIds.isEmpty ? null : b.bagFlavorIds[i],
+                        ),
+                    ],
+                  ),
+            const SectionTitle('我的感官档案'),
+            Surface(child: SensoryProfile(values: b.sensory)),
+            OutlinedButton(
+              onPressed: () => Navigator.of(c).push(
+                CoffeeRoute(
+                  context: c,
+                  builder: (_) =>
+                      SensoryEditor(controller: controller, bean: b),
+                ),
+              ),
+              child: const Text('编辑感官档案'),
+            ),
             if (b.note.isNotEmpty) ...[
               const SectionTitle('关于这袋豆子'),
               Surface(
@@ -651,6 +755,52 @@ class BeanDetail extends StatelessWidget {
                     : () => editCup(c, controller, bean: b, reuse: logs.first),
                 icon: const Icon(Icons.replay_rounded),
                 label: const Text('沿用上次参数'),
+              ),
+            if (logs.any((cup) => cup.favorite))
+              OutlinedButton.icon(
+                onPressed: controller.data.remaining(b) <= 0
+                    ? null
+                    : () async {
+                        final source = await showModalBottomSheet<Cup>(
+                          context: c,
+                          isScrollControlled: true,
+                          useSafeArea: true,
+                          builder: (sheet) => ListView(
+                            shrinkWrap: true,
+                            children: [
+                              const ListTile(title: Text('沿用同豆收藏杯参数')),
+                              for (final cup in logs.where(
+                                (cup) => cup.favorite,
+                              ))
+                                ListTile(
+                                  title: Text(
+                                    '${dayKey(cup.at)} ${cup.at.hour.toString().padLeft(2, '0')}:${cup.at.minute.toString().padLeft(2, '0')} · ${cup.name}',
+                                  ),
+                                  subtitle: Text(
+                                    '${gramsText(cup.grams)} g / ${gramsText(cup.water)} g / ${durationText(cup.seconds)}',
+                                  ),
+                                  onTap: () => Navigator.pop(sheet, cup),
+                                ),
+                            ],
+                          ),
+                        );
+                        if (source != null && c.mounted) {
+                          editCup(c, controller, bean: b, reuse: source);
+                        }
+                      },
+                icon: const Icon(Icons.star_outline),
+                label: const Text('沿用收藏杯参数'),
+              ),
+            if (logs.length >= 2)
+              OutlinedButton.icon(
+                onPressed: () => Navigator.of(c).push(
+                  CoffeeRoute(
+                    context: c,
+                    builder: (_) => HistoryCompare(cups: logs),
+                  ),
+                ),
+                icon: const Icon(Icons.compare_arrows),
+                label: const Text('同豆历史对照'),
               ),
             TextButton.icon(
               onPressed: () => adjustStock(c, controller, b),
@@ -726,16 +876,32 @@ class Journal extends StatefulWidget {
 }
 
 class _JournalState extends State<Journal> {
-  String query = '';
+  String query = '', beanFilter = '';
+  Map<String, String> flavorFilter = {};
+  final search = TextEditingController();
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
+  }
+
   bool liked = false;
   @override
   Widget build(BuildContext c) {
     final ct = widget.controller;
+    if (beanFilter.isNotEmpty &&
+        !ct.data.beans.any((b) => b.id == beanFilter)) {
+      beanFilter = '';
+    }
+
     final cups =
         ct.data.cups
             .where(
               (x) =>
                   (!liked || x.favorite) &&
+                  (beanFilter.isEmpty || x.beanId == beanFilter) &&
+                  (flavorFilter.isEmpty ||
+                      flavorFilter.keys.any(x.resolvedTasteIds.contains)) &&
                   '${x.name} ${x.note} ${x.tastes.join(' ')}'
                       .toLowerCase()
                       .contains(query.toLowerCase()),
@@ -776,6 +942,7 @@ class _JournalState extends State<Journal> {
         ),
         const SizedBox(height: 22),
         TextField(
+          controller: search,
           decoration: const InputDecoration(
             hintText: '搜索豆子、风味或感受',
             hintStyle: TextStyle(fontSize: 12),
@@ -804,6 +971,54 @@ class _JournalState extends State<Journal> {
           ],
         ),
         const SizedBox(height: 18),
+        DropdownButtonFormField<String>(
+          key: ValueKey('bean-$beanFilter'),
+          initialValue: beanFilter,
+          isExpanded: true,
+          decoration: fieldLabel('按豆子筛选'),
+          items: [
+            const DropdownMenuItem(value: '', child: Text('所有豆子')),
+            for (final b in ct.data.beans)
+              DropdownMenuItem(
+                value: b.id,
+                child: Text(
+                  b.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+          onChanged: (v) => setState(() => beanFilter = v!),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton(
+          onPressed: () async {
+            final result = await pickFlavors(c, ct, flavorFilter);
+            if (result != null && mounted) {
+              setState(() => flavorFilter = result);
+            }
+          },
+          child: Text(
+            flavorFilter.isEmpty
+                ? '按风味筛选'
+                : '风味：${flavorFilter.values.join('、')}（任一）',
+          ),
+        ),
+        if (query.isNotEmpty ||
+            liked ||
+            beanFilter.isNotEmpty ||
+            flavorFilter.isNotEmpty)
+          TextButton(
+            onPressed: () => setState(() {
+              search.clear();
+              query = '';
+              liked = false;
+              beanFilter = '';
+              flavorFilter = {};
+            }),
+            child: const Text('清除搜索与筛选'),
+          ),
+        const SizedBox(height: 12),
         if (cups.isEmpty)
           EmptyState(
             '等一杯值得记住的咖啡',
@@ -887,7 +1102,7 @@ class CupCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            '${gramsText(cup.grams)} g 粉  /  ${cup.water} g 水  /  ${cup.seconds} 秒',
+            '${gramsText(cup.grams)} g 粉  /  ${gramsText(cup.water)} g 水  /  ${durationText(cup.seconds)}',
             style: TextStyle(fontSize: 11, color: muted(c)),
           ),
           if (cup.note.isNotEmpty) ...[
@@ -908,7 +1123,10 @@ class CupCard extends StatelessWidget {
             Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: [for (final t in cup.tastes) Tag(t)],
+              children: [
+                for (var i = 0; i < cup.tastes.length; i++)
+                  FlavorTag(cup.tastes[i], id: cup.resolvedTasteIds[i]),
+              ],
             ),
           ],
         ],
@@ -987,15 +1205,14 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   runSpacing: 20,
                   children: [
                     _parameter(c, '${gramsText(cup.grams)} g', '粉量'),
-                    _parameter(c, '${cup.water} g', '注水'),
-                    _parameter(c, '${cup.seconds} 秒', '时长'),
+                    _parameter(c, '${gramsText(cup.water)} g', '注水'),
                     _parameter(
                       c,
-                      cup.grams > 0
-                          ? '1 : ${(cup.water / cup.grams).toStringAsFixed(1)}'
-                          : '—',
-                      '粉水比',
+                      cup.temperature == null ? '未记录' : '${cup.temperature} °C',
+                      '水温',
                     ),
+                    _parameter(c, durationText(cup.seconds), '总时长（含滴滤）'),
+                    _parameter(c, ratioText(cup.grams, cup.water), '粉水比'),
                   ],
                 ),
               ),
@@ -1007,7 +1224,6 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   padding: const EdgeInsets.only(top: 16),
                   child: Text(
                     [
-                      if (cup.temperature != null) '水温 ${cup.temperature} °C',
                       if (cup.brewer.isNotEmpty) '器具 ${cup.brewer}',
                       if (cup.grinder.isNotEmpty) '磨豆机 ${cup.grinder}',
                       if (cup.grind.isNotEmpty) '研磨 ${cup.grind}',
@@ -1028,7 +1244,10 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [for (final t in cup.tastes) Tag(t)],
+                children: [
+                  for (var i = 0; i < cup.tastes.length; i++)
+                    FlavorTag(cup.tastes[i], id: cup.resolvedTasteIds[i]),
+                ],
               ),
               if (cup.rating > 0)
                 Padding(
@@ -1069,7 +1288,7 @@ Future<void> showCup(BuildContext c, CoffeeController ct, Cup initial) async {
                   if (await confirm(
                     sheet,
                     '删除这篇手记？',
-                    '删除后，相应的用豆量会返还豆仓。\${ct.stockImpact(ct.data.copy(cups: ct.data.cups.where((x) => x.id != cup.id).toList()), {cup.beanId})}',
+                    '删除后，相应的用豆量会返还豆仓。${ct.stockImpact(ct.data.copy(cups: ct.data.cups.where((x) => x.id != cup.id).toList()), {cup.beanId})}',
                     action: '删除',
                     destructive: true,
                   )) {
@@ -1128,10 +1347,12 @@ class _InsightsState extends State<Insights> {
         ? '—'
         : (rated.fold<int>(0, (s, x) => s + x.rating) / rated.length)
               .toStringAsFixed(1);
-    final tasteCounts = {
-      for (final t in flavors)
-        t: cups.where((x) => x.tastes.contains(t)).length,
-    };
+    final tasteCounts = <String, int>{};
+    for (final cup in cups) {
+      for (final taste in cup.tastes.toSet()) {
+        tasteCounts[taste] = (tasteCounts[taste] ?? 0) + 1;
+      }
+    }
     final tastes = tasteCounts.entries.where((x) => x.value > 0).toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return ListView(
@@ -1390,7 +1611,7 @@ class _SettingsPageState extends State<SettingsPage> {
       if (await confirm(
         context,
         '恢复这份备份？',
-        '包含 ${candidate.beans.length} 袋豆子、${candidate.cups.length} 篇手记、${candidate.photos.length} 张照片${candidate.demo ? '（示例空间）' : ''}。\n将替换当前豆仓。替换前会在应用内保留原记录与相应照片，可在设置中撤销恢复。',
+        '包含 ${candidate.beans.length} 袋豆子、${candidate.cups.length} 篇手记、${candidate.photos.length} 张照片、${candidate.customFlavors.length} 个自定义风味、${candidate.beans.where((b) => b.sensory.any((v) => v != null)).length} 份感官档案、${candidate.adjustments.length} 条校正${candidate.demo ? '（示例空间）' : ''}。\n将替换当前豆仓。替换前会在应用内保留原记录与相应照片，可在设置中撤销恢复。',
         action: '替换并恢复',
         destructive: true,
       )) {
@@ -1524,7 +1745,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 8),
             Center(
               child: Text(
-                '0.2.0 · 本地体验版',
+                '0.3.0 · 本地体验版',
                 style: TextStyle(color: muted(c), fontSize: 11),
               ),
             ),

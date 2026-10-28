@@ -131,6 +131,46 @@ class CoffeeValidation : Instrumentation() {
                 try { files.write(data(photoRef="11111111-1111-1111-1111-111111111111.jpg"), true) } catch (_: Exception) { failed = true }
                 check(failed); check(files.read() == before)
             }
+            test("Schema 3 complete ZIP preserves decimal water, structured bean, custom vocabulary and sensory") {
+                val upgraded = JSONObject(before).put("schema", 3)
+                upgraded.put("customFlavors", JSONArray().put(JSONObject().put("id", "custom-qa").put("label", "Synthetic aroma").put("group", "floral").put("active", false)))
+                upgraded.getJSONArray("beans").getJSONObject(0).put("roast", "ultraLight")
+                    .put("origin", "Unparsed original").put("country", "Unknown").put("region", "QA region")
+                    .put("farm", "QA farm").put("station", "QA station").put("varieties", JSONArray().put("QA variety"))
+                    .put("bagFlavors", JSONArray().put("Jasmine"))
+                    .put("sensory", JSONArray().put(JSONObject.NULL).put(0).put(1).put(5).put(10).put(JSONObject.NULL))
+                upgraded.put("cups", JSONArray().put(JSONObject().put("id", "native-cup").put("beanId", "native-bag")
+                    .put("gramsTenths", 155).put("waterTenths", 2405).put("seconds", 150).put("temperature", JSONObject.NULL)
+                    .put("tastes", JSONArray().put("Historical aroma")).put("tasteIds", JSONArray().put("custom-qa"))))
+                val json = upgraded.toString()
+                files.write(json, false)
+                val zip = File(directory, "schema3.zip")
+                files.export(Uri.fromFile(zip), json)
+                val third = CoffeeFiles(File(directory,"third").apply { mkdirs() }, cache, targetContext.contentResolver)
+                val imported = third.import(Uri.fromFile(zip))
+                check(imported == json)
+                third.write(imported, false)
+                check(CoffeeFiles(File(directory,"third"),cache,targetContext.contentResolver).read() == json)
+                files.write(before, true)
+                check(files.previous() == json)
+                files.write(files.previous()!!, false)
+                check(files.read() == json)
+                check(File(files.media,photo).isFile)
+                files.write(before, false)
+            }
+            test("Schema 2 migration source retained independently; failed preservation does not overwrite") {
+                files.write(before, false)
+                files.preserveMigration()
+                check(File(root,"coffee-schema2-original.json").readText() == before)
+                val blockedRoot = File(directory,"blocked").apply { mkdirs() }
+                val blocked = CoffeeFiles(blockedRoot,cache,targetContext.contentResolver)
+                File(blockedRoot,"coffee-v1.json").writeText(before)
+                File(blockedRoot,"coffee-schema2-original.json").mkdirs()
+                var failed = false
+                try { blocked.preserveMigration() } catch (_: Exception) { failed=true }
+                check(failed)
+                check(blocked.read() == before)
+            }
             val output = Bundle().apply { putString("results", results.toString()); putInt("passed",results.length()) }
             finish(Activity.RESULT_OK, output)
         } catch (e: Throwable) {

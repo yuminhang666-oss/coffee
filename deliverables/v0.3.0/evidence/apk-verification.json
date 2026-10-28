@@ -1,0 +1,62 @@
+{
+  "syntheticQaOnly": true,
+  "baseline": {
+    "apk": "app-release.apk",
+    "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+    "package": "package: name='cn.coffeejournal.coffee_journal' versionCode='2' versionName='0.2.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+    "sdk": [
+      "sdkVersion:'24'",
+      "targetSdkVersion:'36'",
+      "native-code: 'x86_64'"
+    ],
+    "permissions": [
+      "uses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'"
+    ],
+    "sha256": "94aa843af738c6008e6fcc27309526be6ef7514aacb32b3c5ca5a1b7c10af230"
+  },
+  "final": [
+    {
+      "apk": "app-arm64-v8a-release.apk",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "package": "package: name='cn.coffeejournal.coffee_journal' versionCode='3' versionName='0.3.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "sdk": [
+        "sdkVersion:'24'",
+        "targetSdkVersion:'36'",
+        "native-code: 'arm64-v8a'"
+      ],
+      "permissions": [
+        "uses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'"
+      ],
+      "sha256": "10dd1aad1dab40d334b6193ad7de31a3060af10720fb7f9f2b936ca27b0bcb80"
+    },
+    {
+      "apk": "app-armeabi-v7a-release.apk",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "package": "package: name='cn.coffeejournal.coffee_journal' versionCode='3' versionName='0.3.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "sdk": [
+        "sdkVersion:'24'",
+        "targetSdkVersion:'36'",
+        "native-code: 'armeabi-v7a'"
+      ],
+      "permissions": [
+        "uses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'"
+      ],
+      "sha256": "47e61567428c2b9217e40e7a8147e5ed09a44989ecaef43051659572caa6aa93"
+    },
+    {
+      "apk": "app-x86_64-release.apk",
+      "certificateSha256": "e0abafcf0c3f78b58602d1e369e2f740d7dc5e516eb414cc70b218912e409ec4",
+      "package": "package: name='cn.coffeejournal.coffee_journal' versionCode='3' versionName='0.3.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+      "sdk": [
+        "sdkVersion:'24'",
+        "targetSdkVersion:'36'",
+        "native-code: 'x86_64'"
+      ],
+      "permissions": [
+        "uses-permission: name='cn.coffeejournal.coffee_journal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'"
+      ],
+      "sha256": "32c97a8a6f0dac5e2f9a39be826e0133943a0d6f1935d4eb4387a3c5833db922"
+    }
+  ],
+  "sameApplicationAndCertificate": true
+}

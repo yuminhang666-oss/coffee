@@ -1,5 +1,11 @@
 # 架构与数据
 
+## 当前 0.3.0
+
+持久化数据升级为 schema 3；完整 ZIP 容器仍为 v2。具体字段、空值、整数单位、旧数据映射和回退约定见 [0.3.0 迁移说明](migration-v0.3.0.md)。`lib/core/flavors.dart` 定义稳定风味 ID、烘焙 ID 和原创推荐排序；`lib/ui/flavor_picker.dart` 提供词库与管理；`sensory.dart` 使用 CustomPainter 绘制六轴六边形，输入独立于图形；`history_compare.dart` 只对照同豆记录，不给出因果结论。存储仍统一经过 controller 的串行队列、完整校验和 Android AtomicFile。
+
+以下为 0.2.0 历史架构记录。除 0.3.0 文档明确变更的字段外，照片、整数库存与备份安全约束继续适用。
+
 ## 范围与入口
 
 独立 Flutter Android 离线应用，applicationId 保持 `cn.coffeejournal.coffee_journal`。首页始终是豆仓，其余标签为手记、回味。只在冲煮后填写，没有实时计时。

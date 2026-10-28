@@ -1,5 +1,26 @@
 # 设计取舍与来源
 
+## 0.3.0：查阅、采用与边界（2026-10-28）
+
+本轮独立用 Flutter 实现交互，未复制第三方代码、图片、词轮视觉布局或色值体系；未安装依赖。仍是豆仓／手记／回味，主流程是选豆 → 主参数 → 宽敞感受区 → 选填风味和评分 → 保存。
+
+| 来源 | 本次实际读取与适用点 | 实际采用 | 未采用 |
+| --- | --- | --- | --- |
+| [WCR Sensory Lexicon](https://worldcoffeeresearch.org/resources/sensory-lexicon) | 官方介绍，包含风味、香气和质地属性，并说明强度描述用途 | 区分香气味道、口感与问题描述；花香、茉莉、杏仁、菠萝、椰子、纸感标为参考属性的中文简译 | 未下载或复制整份词典定义；不把扩展词库或个人图变成官方标准 |
+| [SCA 风味轮资料](https://sca.coffee/store) | 商店公开说明，分层寻找描述的组织思路及使用范围 | 大类 → 具体词；采用独立下拉分类、搜索和勾选交互 | 未复刻轮图、完整视觉编排、品牌色或大段定义 |
+| [Beanconqueror 风味选择源码](https://github.com/graphefruit/Beanconqueror/blob/develop/src/app/brew/brew-flavor-picker/brew-flavor-picker.component.ts) | 读取选词组件：分开预设与自定义，编辑使用副本，确认后返回选择 | 独立选择草稿、固定已选汇总、确认后带回单杯表单；自定义词有稳定身份 | 没有移植 Angular/Ionic 代码、数据结构或界面 |
+| [Beanconqueror 雷达图源码](https://github.com/graphefruit/Beanconqueror/blob/develop/src/components/cupping-radar/cupping-radar.component.ts) | 读取指标输入和图表更新逻辑，并确认它有额外指标及合计分数 | 输入与可视化联动的组织思路；本项目独立实现六项、0.5 步进、空值不补零 | 不采用其指标、默认零、总分、Chart.js 或延迟更新机制 |
+| [Roastbook README](https://github.com/michidk/roastbook) | 读取豆子产地、产区、农场、品种、处理法，以及冲煮历史和模板说明 | 字段职责明确；同豆参数复用与历史对照，一袋仍独立库存 | 不采用服务端、AI、同步或库存合并 |
+
+本次核对 [Beanconqueror 根 LICENSE（GPL-3.0）](https://github.com/graphefruit/Beanconqueror/blob/develop/LICENSE) 与 [Roastbook 根 LICENSE（MIT）](https://github.com/michidk/roastbook/blob/main/LICENSE)。仅借鉴组织思路，没有复用代码或素材；如果将来复用，须再次检查具体文件与当时许可。以上是网页与源码阅读，没有运行或验证第三方应用。
+
+词库来自本轮用户提供的候选，自行组织为 15 类、103 个中文词；ID 固定后不随显示名称修改。仅明确列出的参考属性简译具有上述参考关系，其余是日常找词补充。浅度和极浅度推荐均超过 20 个词，顺序不同，并始终保留全部风味。六国入口是产品找词排序，不是产地鉴定；不从产地填入品种或实际风味。本轮没有把可选进口商批次资料用作国家风味定论，也未引用其中未读取的内容。
+
+自定义词历史使用“ID + 当时文字”快照。改名和停用只改变词库，新记录不显示停用候选，已选和历史不消失。颜色按家族设定，深浅主题分别调整明度；勾号、边框及固定已选列表共同表示选择。口感不伪装成香气。六项图使用原生绘制；不生成总分，不从每杯平均推导豆子档案。
+
+## 0.2.0 历史记录
+
+
 0.2.0 按用户指定使用 emil-design-eng 技能，沿用 Flutter Android 和离线架构。原生实现即时按压反馈、简短转场和减少动画支持；不移植技能中的网页 CSS，也不把 iOS 外观当作性能已经达标。
 
 | Before | After | Why |

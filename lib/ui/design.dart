@@ -55,7 +55,11 @@ ThemeData coffeeTheme(Brightness b) {
         surfaceContainerLowest: dark ? const Color(0xFF171310) : cream,
         surfaceTint: Colors.transparent,
       );
-  final base = ThemeData(brightness: b, useMaterial3: true, colorScheme: scheme);
+  final base = ThemeData(
+    brightness: b,
+    useMaterial3: true,
+    colorScheme: scheme,
+  );
   return base.copyWith(
     cupertinoOverrideTheme: CupertinoThemeData(
       primaryColor: scheme.primary,

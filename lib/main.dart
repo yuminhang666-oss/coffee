@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/controller.dart';
 import 'ui/app.dart';
 import 'ui/design.dart';
+import 'ui/flavor_picker.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,10 @@ class CoffeeApp extends StatelessWidget {
             : SystemUiOverlayStyle.dark.copyWith(
                 systemNavigationBarColor: Colors.transparent,
               ),
-        child: child!,
+        child: FlavorPalette(
+          terms: controller.data.customFlavors,
+          child: child!,
+        ),
       ),
       home: CoffeeRoot(controller: controller),
     ),

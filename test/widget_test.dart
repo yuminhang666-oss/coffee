@@ -155,7 +155,7 @@ void main() {
       expect(c.data.demo, true);
       expect(
         () => CoffeeData.decode(
-          c.data.encode().replaceFirst('"schema": 2', '"schema": 99'),
+          c.data.encode().replaceFirst('"schema": 3', '"schema": 99'),
         ),
         throwsFormatException,
       );
@@ -234,12 +234,22 @@ void main() {
       );
       await t.tap(find.text('保存这杯的记忆'));
       await t.pumpAndSettle();
-      expect(find.text('填 0.1–1000'), findsOneWidget);
+      expect(find.text('填 0.1–1000，最多一位小数'), findsOneWidget);
       final fields = find.byType(TextFormField);
       await t.enterText(fields.at(0), '15.5');
       await t.enterText(fields.at(1), '240');
-      await t.enterText(fields.at(2), '145');
-      await t.enterText(fields.at(3), 'A bright and sweet cup');
+      await t.enterText(fields.at(2), '2');
+      await t.enterText(fields.at(3), '25');
+      await t.enterText(fields.at(4), '93');
+      await t.scrollUntilVisible(
+        find.byWidgetPredicate((w) => w is TextField && w.maxLength == 2000),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await t.enterText(
+        find.byWidgetPredicate((w) => w is TextField && w.maxLength == 2000),
+        'A bright and sweet cup',
+      );
       await t.tap(find.text('保存这杯的记忆'));
       await t.pumpAndSettle();
       expect(c.data.cups.single.grams, 15.5);

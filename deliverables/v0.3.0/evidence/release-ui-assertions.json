@@ -1,0 +1,20 @@
+{
+  "synthetic": true,
+  "actualReleaseUiSaved": true,
+  "survivedProcessRestart": true,
+  "assertionReadViaDebuggableOverlay": true,
+  "cups": 2,
+  "remainingTenths": 2189,
+  "waterTenths": [
+    2405,
+    2405
+  ],
+  "seconds": [
+    45,
+    150
+  ],
+  "temperature": [
+    93,
+    0
+  ]
+}

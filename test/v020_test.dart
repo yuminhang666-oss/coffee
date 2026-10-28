@@ -19,11 +19,13 @@ void main() {
   test('Explicit schema 1 migration preserves every old field and ID', () {
     final old = jsonDecode(legacy) as Map;
     final migrated = CoffeeData.decode(legacy);
-    expect(migrated.toJson()['schema'], 2);
+    expect(migrated.toJson()['schema'], 3);
     for (var i = 0; i < migrated.cups.length; i++) {
       final original = Map<String, dynamic>.from(old['cups'][i] as Map);
       final newCup = migrated.cups[i].toJson();
       final grams = original.remove('grams');
+      final water = original.remove('water');
+      expect(newCup['waterTenths'], (water as int) * 10);
       for (final e in original.entries) {
         expect(newCup[e.key], e.value);
       }
@@ -34,6 +36,8 @@ void main() {
     for (var i = 0; i < migrated.beans.length; i++) {
       final original = Map<String, dynamic>.from(old['beans'][i] as Map);
       final weight = original.remove('weight');
+      final roast = original.remove('roast');
+      expect(migrated.beans[i].roast, roastId(roast as String));
       for (final e in original.entries) {
         expect(migrated.beans[i].toJson()[e.key], e.value);
       }
@@ -136,7 +140,7 @@ void main() {
       expect(await c.removeCup('c'), false);
       expect(store.raw, before);
       expect(c.data.adjustments.length, 1);
-      expect(c.error, contains('30.0 g'));
+      expect(c.error, contains('30 g'));
       expect(c.error, contains('先校正'));
       await c.adjustStock(b, 100, '先撤回重复校正');
       expect(await c.removeCup('c'), true);
@@ -228,7 +232,7 @@ void main() {
         final c = CoffeeController(AndroidStore());
         await c.load();
         expect(c.locked, false);
-        expect(jsonDecode(raw!)['schema'], 2);
+        expect(jsonDecode(raw!)['schema'], 3);
         expect(
           calls.indexOf('preserveMigration'),
           lessThan(calls.indexOf('write')),
@@ -307,7 +311,15 @@ void main() {
       expect(c.data.remaining(b), 234.5);
       expect(find.widgetWithText(TextFormField, '15.5'), findsOneWidget);
       final feeling = '花香和甜感。' * 200;
-      await t.enterText(find.byType(TextFormField).at(3), feeling);
+      await t.scrollUntilVisible(
+        find.byWidgetPredicate((w) => w is TextField && w.maxLength == 2000),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await t.enterText(
+        find.byWidgetPredicate((w) => w is TextField && w.maxLength == 2000),
+        feeling,
+      );
       await t.tap(find.byTooltip('返回'));
       await t.pumpAndSettle();
       expect(find.text('放弃这次编辑？'), findsOneWidget);
@@ -336,7 +348,9 @@ void main() {
     final fields = find.byType(TextFormField);
     await t.enterText(fields.at(0), '15.5');
     await t.enterText(fields.at(1), '240');
-    await t.enterText(fields.at(2), '145');
+    await t.enterText(fields.at(2), '2');
+    await t.enterText(fields.at(3), '25');
+    await t.enterText(fields.at(4), '93');
     await t.tap(find.text('保存这杯的记忆'));
     await t.pumpAndSettle();
     expect(find.text('核对校正后的余量'), findsNothing);

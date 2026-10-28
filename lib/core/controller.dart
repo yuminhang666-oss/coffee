@@ -9,6 +9,7 @@ String _validatedSnapshot(CoffeeData data) {
   for (final value in [
     ...data.beans.map((b) => b.weight),
     ...data.cups.map((c) => c.grams),
+    ...data.cups.map((c) => c.water),
   ]) {
     if (!value.isFinite || (value * 10 - (value * 10).round()).abs() > .00001) {
       throw const FormatException('克数必须保留最多一位小数');
@@ -78,7 +79,7 @@ class CoffeeController extends ChangeNotifier {
         mediaDirectory = await android.mediaRoot();
         if (raw != null) {
           await android.validatePhotos(loaded.encode());
-          if ((jsonDecode(raw) as Map)['schema'] == 1) {
+          if ((jsonDecode(raw) as Map)['schema'] != 3) {
             await android.preserveMigration();
             await android.write(loaded.encode());
           }
@@ -141,6 +142,11 @@ class CoffeeController extends ChangeNotifier {
   Future<bool> saveCup(Cup cup) => change(
     (d) => d.copy(cups: [cup, ...d.cups.where((x) => x.id != cup.id)]),
   );
+  Future<bool> saveFlavor(FlavorTerm term) => change(
+    (d) => d.copy(
+      customFlavors: [term, ...d.customFlavors.where((t) => t.id != term.id)],
+    ),
+  );
   Future<bool> removeCup(String id) =>
       change((d) => d.copy(cups: d.cups.where((x) => x.id != id).toList()));
   Future<bool> saveBean(Bean bean) => change(
@@ -194,7 +200,7 @@ class CoffeeController extends ChangeNotifier {
           ids.contains(b.id) && data.adjustments.any((a) => a.beanId == b.id),
     );
     if (affected.isEmpty) return '';
-    return '\n已有库存校正，历史修改会重新计算：\n${affected.map((b) => '${b.name}：${data.remaining(b)} → ${next.remaining(b)} g（有效范围 0–${b.weight} g）').join('\n')}\n校正记录保持不变；如结果越界，请先校正余量或取消本次修改。';
+    return '\n已有库存校正，历史修改会重新计算：\n${affected.map((b) => '${b.name}：${gramsText(data.remaining(b))} → ${gramsText(next.remaining(b))} g（有效范围 0–${gramsText(b.weight)} g）').join('\n')}\n校正记录保持不变；如结果越界，请先校正余量或取消本次修改。';
   }
 
   // Media mutations and restore preparation share the business queue.

@@ -1,5 +1,13 @@
 # 咖啡手记 · Coffee Journal
 
+当前版本 **0.3.0+3**。见 [0.3.0 更新说明](docs/v0.3.0.md)、[迁移约定](docs/migration-v0.3.0.md) 与 [本轮验证](docs/validation-v0.3.0.md)。[GitHub Release](https://github.com/yuminhang666-oss/coffee/releases/tag/v0.3.0) 提供安装包、源码归档和校验值。
+
+安装包：[ARM64](https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-arm64.apk) · [ARM32](https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-arm32.apk) · [SHA-256](deliverables/v0.3.0/SHA256SUMS.txt)。沿用原应用 ID 与 Android Debug 体验签名，支持覆盖安装。
+
+0.3.0 主参数默认显示粉量、注水量、分秒总时长及水温；新增记录不预填温度。资料分开记录产地、生产者、处理站和品种，提供六档烘焙、分组中文风味库和每袋个人六项感官档案。风味与评分选填，沿用参数清空本杯感受，继续离线使用。
+
+以下 0.2.0 内容保留为历史说明，当前数据与交互约定以 0.3.0 文档为准。
+
 豆仓始终是首页。买过的每一袋豆子，和喝完后写下的每一杯感受，都留在本机。
 
 [下载 0.2.0 ARM64 安装包](https://github.com/yuminhang666-oss/coffee/releases/download/v0.2.0/CoffeeJournal-0.2.0-arm64.apk) · [ARM32 兼容包、校验清单与更新说明](https://github.com/yuminhang666-oss/coffee/releases/tag/v0.2.0)

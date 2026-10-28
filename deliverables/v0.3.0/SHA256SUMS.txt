@@ -1,0 +1,5 @@
+47e61567428c2b9217e40e7a8147e5ed09a44989ecaef43051659572caa6aa93  CoffeeJournal-0.3.0-arm32.apk
+10dd1aad1dab40d334b6193ad7de31a3060af10720fb7f9f2b936ca27b0bcb80  CoffeeJournal-0.3.0-arm64.apk
+157e1da8335099a52610fe18bad4ad50e18ad37de7999e43dea55024c1a88fc5  CoffeeJournal-0.3.0-changes.patch
+7e822b49e2ed0c660b40eae7cd4a8941b012a90a1e610445c8fa69b0a31b53e3  CoffeeJournal-0.3.0-source.zip
+32c97a8a6f0dac5e2f9a39be826e0133943a0d6f1935d4eb4387a3c5833db922  CoffeeJournal-0.3.0-x86_64.apk

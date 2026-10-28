@@ -1,0 +1,18 @@
+{
+  "restoredAfterIsolatedAvdRestart": true,
+  "sameSyntheticJsonAndPhotos": true,
+  "beans": 8,
+  "cups": 5,
+  "customFlavors": 2,
+  "sensory": [
+    0,
+    1,
+    5,
+    10,
+    5,
+    6
+  ],
+  "shippedBinaryExactRoundtrip": true,
+  "recommendationSwitchDidNotModifyBeanOrAddRecord": true,
+  "finalFlavorAliasTestsPassed": true
+}

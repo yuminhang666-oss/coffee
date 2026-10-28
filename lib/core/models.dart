@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'flavors.dart';
+export 'flavors.dart';
+
 String newId() => DateTime.now().microsecondsSinceEpoch.toString();
 String dayKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
@@ -60,7 +63,9 @@ class Cup {
   final String brewer, grinder, grind;
   final int? temperature;
   final DateTime at;
-  final int cents, rating, water, seconds;
+  final int cents, rating, seconds;
+  final num water;
+  final List<String> tasteIds;
   final double grams;
   final bool favorite;
   final List<String> tastes;
@@ -79,6 +84,7 @@ class Cup {
     this.seconds = 0,
     this.favorite = false,
     this.tastes = const [],
+    this.tasteIds = const [],
     this.brewer = '',
     this.grinder = '',
     this.grind = '',
@@ -95,15 +101,20 @@ class Cup {
     'cents': cents,
     'rating': rating,
     'gramsTenths': gramsTenths,
-    'water': water,
+    'waterTenths': waterTenths,
     'seconds': seconds,
     'favorite': favorite,
     'tastes': tastes,
+    'tasteIds': resolvedTasteIds,
     'brewer': brewer,
     'grinder': grinder,
     'grind': grind,
     'temperature': temperature,
   };
+  int get waterTenths => (water * 10).round();
+  List<String> get resolvedTasteIds => tasteIds.isEmpty
+      ? tastes.map((t) => knownFlavor(t)?.id ?? builtInFlavorId(t)).toList()
+      : tasteIds;
   int get gramsTenths => (grams * 10).round();
   Cup parametersFor(Bean bean, DateTime now) => Cup(
     id: newId(),
@@ -128,8 +139,9 @@ class Cup {
         id.isEmpty ||
         !methods.contains(method) ||
         ts is! List ||
-        ts.length > 8 ||
-        ts.any((t) => !flavors.contains(t))) {
+        ts.length > 40 ||
+        ts.any((t) => t is! String || t.trim().isEmpty || t.length > 40) ||
+        (ts.whereType<String>().map(flavorKey).toSet().length != ts.length)) {
       throw const FormatException('咖啡记录无效');
     }
     return Cup(
@@ -143,16 +155,17 @@ class Cup {
       cents: integer(m, 'cents', 0, 10000000),
       rating: integer(m, 'rating', 0, 5),
       grams: integer(m, 'gramsTenths', 0, 10000) / 10,
-      water: integer(m, 'water', 0, 30000, 0),
+      water: integer(m, 'waterTenths', 0, 300000) / 10,
       seconds: integer(m, 'seconds', 0, 86400, 0),
       favorite: boolean(m, 'favorite'),
       tastes: ts.cast<String>().toList(),
+      tasteIds: selectionIds(m, 'tasteIds', ts.cast<String>()),
       brewer: str(m, 'brewer', max: 80),
       grinder: str(m, 'grinder', max: 80),
       grind: str(m, 'grind', max: 80),
       temperature: m['temperature'] == null
           ? null
-          : integer(m, 'temperature', 1, 100),
+          : integer(m, 'temperature', 0, 100),
     );
   }
   Cup liked() => Cup.fromJson({...toJson(), 'favorite': !favorite});
@@ -161,6 +174,10 @@ class Cup {
 class Bean {
   final String id, name, origin, roast, process, note, roaster;
   final String photo;
+  final String country, region, farm, station;
+  final List<String> varieties, bagFlavors, bagFlavorIds;
+  final List<int?> sensory;
+  final bool originReviewed;
   final num weight;
   final int cents;
   final DateTime? boughtAt, roastedAt;
@@ -168,7 +185,7 @@ class Bean {
     required this.id,
     required this.name,
     this.origin = '',
-    this.roast = '浅烘',
+    this.roast = 'light',
     this.process = '',
     this.note = '',
     this.roaster = '',
@@ -177,13 +194,35 @@ class Bean {
     this.boughtAt,
     this.roastedAt,
     this.photo = '',
+    this.country = '',
+    this.region = '',
+    this.farm = '',
+    this.station = '',
+    this.varieties = const [],
+    this.bagFlavors = const [],
+    this.bagFlavorIds = const [],
+    this.sensory = const [null, null, null, null, null, null],
+    this.originReviewed = false,
   });
   int get weightTenths => (weight * 10).round();
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
     'origin': origin,
-    'roast': roast,
+    'roast': roastId(roast),
+    'country': country,
+    'region': region,
+    'farm': farm,
+    'station': station,
+    'varieties': varieties,
+    'bagFlavors': bagFlavors,
+    'bagFlavorIds': bagFlavorIds.isEmpty
+        ? bagFlavors
+              .map((t) => knownFlavor(t)?.id ?? builtInFlavorId(t))
+              .toList()
+        : bagFlavorIds,
+    'sensory': sensory,
+    'originReviewed': originReviewed,
     'process': process,
     'note': note,
     'roaster': roaster,
@@ -199,7 +238,20 @@ class Bean {
       name: str(m, 'name', max: 80).trim(),
       origin: str(m, 'origin', max: 80),
       roast: str(m, 'roast'),
-      process: str(m, 'process', max: 80),
+      process: str(m, 'process', max: 300),
+      country: str(m, 'country', max: 80),
+      region: str(m, 'region', max: 160),
+      farm: str(m, 'farm', max: 160),
+      station: str(m, 'station', max: 160),
+      varieties: textList(m, 'varieties', 20, 80),
+      bagFlavors: textList(m, 'bagFlavors', 40, 40),
+      bagFlavorIds: selectionIds(
+        m,
+        'bagFlavorIds',
+        textList(m, 'bagFlavors', 40, 40),
+      ),
+      sensory: sensoryValues(m),
+      originReviewed: boolean(m, 'originReviewed'),
       note: str(m, 'note'),
       roaster: str(m, 'roaster', max: 80),
       weight: integer(m, 'weightTenths', 1, 500000) / 10,
@@ -210,7 +262,7 @@ class Bean {
     );
     if (b.id.isEmpty ||
         b.name.isEmpty ||
-        !['浅烘', '中烘', '深烘'].contains(b.roast) ||
+        !roastNames.containsKey(b.roast) ||
         (b.photo.isNotEmpty && !photoPattern.hasMatch(b.photo))) {
       throw const FormatException('豆单无效');
     }
@@ -265,6 +317,7 @@ class StockAdjustment {
 
 class CoffeeData {
   final List<StockAdjustment> adjustments;
+  final List<FlavorTerm> customFlavors;
   final List<Cup> cups;
   final List<Bean> beans;
   final bool onboarded, demo;
@@ -276,6 +329,7 @@ class CoffeeData {
     this.demo = false,
     this.theme = 'system',
     this.adjustments = const [],
+    this.customFlavors = const [],
   });
   CoffeeData copy({
     List<Cup>? cups,
@@ -284,6 +338,7 @@ class CoffeeData {
     bool? demo,
     String? theme,
     List<StockAdjustment>? adjustments,
+    List<FlavorTerm>? customFlavors,
   }) => CoffeeData(
     cups: cups ?? this.cups,
     beans: beans ?? this.beans,
@@ -291,6 +346,7 @@ class CoffeeData {
     demo: demo ?? this.demo,
     theme: theme ?? this.theme,
     adjustments: adjustments ?? this.adjustments,
+    customFlavors: customFlavors ?? this.customFlavors,
   );
   int usedTenths(String id) => cups
       .where((c) => c.beanId == id)
@@ -316,7 +372,7 @@ class CoffeeData {
       final remaining = remainingTenths(b);
       if (remaining < 0 || remaining > b.weightTenths) {
         throw FormatException(
-          '${b.name}：计算余量 ${remaining / 10} g，允许 0–${b.weight} g。'
+          '${b.name}：计算余量 ${gramsText(remaining / 10)} g，允许 0–${gramsText(b.weight)} g。'
           '请核对用量或先校正余量，再重试历史编辑；校正记录和购入重量均已保留。',
         );
       }
@@ -325,7 +381,8 @@ class CoffeeData {
 
   Map<String, dynamic> toJson({bool backup = false}) => {
     'app': 'coffee-journal',
-    'schema': 2,
+    'schema': 3,
+    'customFlavors': customFlavors.map((t) => t.toJson()).toList(),
     'adjustments': adjustments.map((a) => a.toJson()).toList(),
     'cups': cups.map((x) => x.toJson()).toList(),
     'beans': beans.map((x) => x.toJson()).toList(),
@@ -346,7 +403,7 @@ class CoffeeData {
     final m = Map<String, dynamic>.from(parsed);
     if (m['app'] != 'coffee-journal' ||
         m['schema'] is! int ||
-        ![1, 2].contains(m['schema']) ||
+        ![1, 2, 3].contains(m['schema']) ||
         m['cups'] is! List ||
         m['beans'] is! List) {
       throw const FormatException('不是受支持的咖啡手记备份');
@@ -374,6 +431,67 @@ class CoffeeData {
       }).toList();
       m['adjustments'] = <dynamic>[];
       m['schema'] = 2;
+    }
+    if (m['schema'] == 2) {
+      m['cups'] = (m['cups'] as List).map((e) {
+        final c = Map<String, dynamic>.from(e as Map);
+        final labels = textList(c, 'tastes', 8, 40);
+        if (labels.any((t) => !flavors.contains(t))) {
+          throw const FormatException('旧风味无效');
+        }
+        return {
+          ...c,
+          'waterTenths': integer(c, 'water', 0, 30000, 0) * 10,
+          'tasteIds': labels.map(builtInFlavorId).toList(),
+        };
+      }).toList();
+      m['beans'] = (m['beans'] as List).map((e) {
+        final b = Map<String, dynamic>.from(e as Map);
+        if (!['浅烘', '中烘', '深烘'].contains(b['roast'])) {
+          throw const FormatException('旧烘焙程度无效');
+        }
+        return {
+          ...b,
+          'roast': roastId(b['roast'] as String),
+          'country': '',
+          'region': '',
+          'farm': '',
+          'station': '',
+          'varieties': <String>[],
+          'bagFlavors': <String>[],
+          'bagFlavorIds': <String>[],
+          'sensory': List<int?>.filled(6, null),
+          'originReviewed': false,
+        };
+      }).toList();
+      m['customFlavors'] = <dynamic>[];
+      m['schema'] = 3;
+    }
+    final rawTerms = m['customFlavors'];
+    if (rawTerms is! List || rawTerms.length > 500) {
+      throw const FormatException('自定义风味列表无效');
+    }
+    final terms = rawTerms.map((e) {
+      final t = Map<String, dynamic>.from(e as Map);
+      final id = str(t, 'id', max: 100),
+          label = str(t, 'label', max: 40).trim(),
+          group = str(t, 'group', max: 40);
+      if (!id.startsWith('custom-') ||
+          label.isEmpty ||
+          !flavorGroups.containsKey(group) ||
+          knownFlavor(label) != null) {
+        throw const FormatException('自定义风味无效');
+      }
+      return FlavorTerm(
+        id: id,
+        label: label,
+        group: group,
+        active: boolean(t, 'active', true),
+      );
+    }).toList();
+    if (terms.map((t) => t.id).toSet().length != terms.length ||
+        terms.map((t) => flavorKey(t.label)).toSet().length != terms.length) {
+      throw const FormatException('自定义风味重复');
     }
     if ((m['cups'] as List).length > 10000 ||
         (m['beans'] as List).length > 2000) {
@@ -420,7 +538,20 @@ class CoffeeData {
       demo: boolean(m, 'demo'),
       theme: theme,
       adjustments: adjustments,
+      customFlavors: terms,
     );
+    final validIds = {
+      ...builtInFlavors.map((t) => t.id),
+      ...terms.map((t) => t.id),
+    };
+    for (final ids in [
+      ...cups.map((c) => c.resolvedTasteIds),
+      ...beans.map((b) => b.bagFlavorIds),
+    ]) {
+      if (ids.any((id) => !validIds.contains(id))) {
+        throw const FormatException('风味标识缺失');
+      }
+    }
     result.validateStock();
     return result;
   }
@@ -432,7 +563,7 @@ class CoffeeData {
         id: 'demo-b1',
         name: '耶加雪菲 · 花见',
         origin: '埃塞俄比亚',
-        roast: '浅烘',
+        roast: 'light',
         process: '水洗',
         roaster: '晨间烘焙（示例）',
         cents: 8800,
@@ -444,7 +575,7 @@ class CoffeeData {
         id: 'demo-b2',
         name: '山野拼配',
         origin: '巴西 / 哥伦比亚',
-        roast: '中烘',
+        roast: 'medium',
         process: '日晒',
         roaster: '山野烘焙（示例）',
         cents: 6800,
@@ -497,4 +628,120 @@ class CoffeeData {
       ),
     ],
   );
+}
+
+List<String> textList(
+  Map<String, dynamic> m,
+  String key,
+  int count,
+  int length,
+) {
+  final v = m[key] ?? <dynamic>[];
+  if (v is! List ||
+      v.length > count ||
+      v.any((x) => x is! String || x.trim().isEmpty || x.length > length)) {
+    throw const FormatException('文字列表无效');
+  }
+  final result = v.cast<String>().toList();
+  if (result.map(flavorKey).toSet().length != result.length) {
+    throw const FormatException('列表重复');
+  }
+  return result;
+}
+
+List<String> selectionIds(
+  Map<String, dynamic> m,
+  String key,
+  List<String> labels,
+) {
+  final ids = textList(m, key, 40, 100);
+  if (ids.length != labels.length) throw const FormatException('风味标识与文字不匹配');
+  return ids;
+}
+
+List<int?> sensoryValues(Map<String, dynamic> m) {
+  final v = m['sensory'];
+  if (v is! List ||
+      v.length != 6 ||
+      v.any((x) => x != null && (x is! int || x < 0 || x > 10))) {
+    throw const FormatException('感官档案无效');
+  }
+  return v.cast<int?>().toList();
+}
+
+const sensoryNames = ['香气强度', '酸感', '甜感', '苦感', '醇厚度', '余韵长度'];
+const sensoryHints = [
+  '弱 → 强',
+  '感受到的酸，弱 → 强',
+  '感受到的甜，弱 → 强',
+  '感受到的苦，弱 → 强',
+  '轻盈 → 厚重',
+  '短 → 长',
+];
+int? parseTenths(String text, {int min = 0, int max = 500000}) {
+  final s = text.trim();
+  if (!RegExp(r'^\d+(\.\d)?$').hasMatch(s)) return null;
+  final parts = s.split('.');
+  final n = int.tryParse(parts[0]);
+  if (n == null || n > max) return null;
+  final value = n * 10 + (parts.length == 2 ? int.parse(parts[1]) : 0);
+  return value < min || value > max ? null : value;
+}
+
+int? parseDuration(String minutes, String seconds) {
+  final m = minutes.trim(), s = seconds.trim();
+  if (m.isEmpty && s.isEmpty) return null;
+  if ((m.isNotEmpty && !RegExp(r'^\d+$').hasMatch(m)) ||
+      (s.isNotEmpty && !RegExp(r'^\d+$').hasMatch(s))) {
+    return null;
+  }
+  final a = m.isEmpty ? 0 : int.tryParse(m),
+      b = s.isEmpty ? 0 : int.tryParse(s);
+  if (a == null ||
+      b == null ||
+      b > 59 ||
+      a > 1440 ||
+      a * 60 + b > 86400 ||
+      a * 60 + b == 0) {
+    return null;
+  }
+  return a * 60 + b;
+}
+
+String durationText(int seconds) => '${seconds ~/ 60}分${seconds % 60}秒';
+String ratioText(num grams, num water) =>
+    grams > 0 && water > 0 && grams.isFinite && water.isFinite
+    ? '1 : ${(water / grams).toStringAsFixed(1)}'
+    : '未记录';
+int? roastDays(Bean b, DateTime now) {
+  final d = b.roastedAt?.toLocal();
+  now = now.toLocal();
+  if (d == null) return null;
+  final days = DateTime.utc(
+    now.year,
+    now.month,
+    now.day,
+  ).difference(DateTime.utc(d.year, d.month, d.day)).inDays;
+  return days < 0 ? null : days;
+}
+
+String gramsText(num g) =>
+    g == g.roundToDouble() ? g.toInt().toString() : g.toStringAsFixed(1);
+String? durationError(String minutes, String seconds) {
+  final m = minutes.trim(), s = seconds.trim();
+  if (m.isEmpty && s.isEmpty) return '请填写分或秒';
+  if (m.isNotEmpty &&
+      (!RegExp(r'^\d+$').hasMatch(m) || int.tryParse(m) == null)) {
+    return '分钟须为非负整数';
+  }
+  if (s.isNotEmpty &&
+      (!RegExp(r'^\d+$').hasMatch(s) ||
+          int.tryParse(s) == null ||
+          int.parse(s) > 59)) {
+    return null;
+  }
+  final a = int.tryParse(m) ?? 0, b = int.tryParse(s) ?? 0;
+  if (a > 1440 || a * 60 + b > 86400) return '总时长最多 24 小时';
+  if (a * 60 + b == 0) return '总时长须大于 0';
+  return null;
 }
