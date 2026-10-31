@@ -1,0 +1,141 @@
+{
+  "repository": "yuminhang666-oss/coffee",
+  "releaseId": 429700164,
+  "tag": "v0.3.0",
+  "sourceCommit": "273e7767f850db54c57f1bd8cbe7a57a79ff1952",
+  "releaseUrl": "https://github.com/yuminhang666-oss/coffee/releases/tag/v0.3.0",
+  "draft": false,
+  "assets": [
+    {
+      "size": 16448772,
+      "publicDownloadVerified": true,
+      "sha256": "47e61567428c2b9217e40e7a8147e5ed09a44989ecaef43051659572caa6aa93",
+      "name": "CoffeeJournal-0.3.0-arm32.apk",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-arm32.apk"
+    },
+    {
+      "size": 18859836,
+      "publicDownloadVerified": true,
+      "sha256": "10dd1aad1dab40d334b6193ad7de31a3060af10720fb7f9f2b936ca27b0bcb80",
+      "name": "CoffeeJournal-0.3.0-arm64.apk",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-arm64.apk"
+    },
+    {
+      "size": 173204,
+      "publicDownloadVerified": true,
+      "sha256": "157e1da8335099a52610fe18bad4ad50e18ad37de7999e43dea55024c1a88fc5",
+      "name": "CoffeeJournal-0.3.0-changes.patch",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-changes.patch"
+    },
+    {
+      "size": 160735,
+      "publicDownloadVerified": true,
+      "sha256": "7e822b49e2ed0c660b40eae7cd4a8941b012a90a1e610445c8fa69b0a31b53e3",
+      "name": "CoffeeJournal-0.3.0-source.zip",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-source.zip"
+    },
+    {
+      "size": 20359998,
+      "publicDownloadVerified": true,
+      "sha256": "32c97a8a6f0dac5e2f9a39be826e0133943a0d6f1935d4eb4387a3c5833db922",
+      "name": "CoffeeJournal-0.3.0-x86_64.apk",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/CoffeeJournal-0.3.0-x86_64.apk"
+    },
+    {
+      "size": 491,
+      "publicDownloadVerified": true,
+      "sha256": "f29c8e2be33a6401c3beed7b250be566a4197733beac3c31e5819ffcaf0cfbfb",
+      "name": "SHA256SUMS.txt",
+      "url": "https://github.com/yuminhang666-oss/coffee/releases/download/v0.3.0/SHA256SUMS.txt"
+    }
+  ],
+  "verifiedAt": "2026-10-31T11:43:18.8651750+08:00",
+  "localCleanup": {
+    "projectRoot": "D:\\Codex\\CampusFlow\\.local\\coffee",
+    "logicalBytesRemoved": 6586279419,
+    "driveFreeBeforeFinalPass": 28512067584,
+    "driveFreeAfterFinalPass": 33333542912,
+    "observedFreeSpaceIncreaseDuringFinalPass": 4821475328,
+    "entries": [
+      {
+        "path": "build",
+        "logicalBytes": 1657211393,
+        "files": 1300,
+        "deleted": true
+      },
+      {
+        "path": ".local/baseline020",
+        "logicalBytes": 358456042,
+        "files": 797,
+        "deleted": true
+      },
+      {
+        "path": ".local/qa-avd",
+        "logicalBytes": 2785552087,
+        "files": 25,
+        "deleted": true
+      },
+      {
+        "path": ".local/tmp",
+        "logicalBytes": 1498125775,
+        "files": 10,
+        "deleted": true
+      },
+      {
+        "path": ".local/pre-final-apks",
+        "logicalBytes": 55668606,
+        "files": 3,
+        "deleted": true
+      },
+      {
+        "path": ".local/previous-final-candidate",
+        "logicalBytes": 55668606,
+        "files": 3,
+        "deleted": true
+      },
+      {
+        "path": "android/.gradle",
+        "logicalBytes": 1732215,
+        "files": 14,
+        "deleted": true
+      },
+      {
+        "path": ".dart_tool/flutter_build",
+        "logicalBytes": 117862150,
+        "files": 54,
+        "deleted": true
+      },
+      {
+        "path": "deliverables/v0.3.0/CoffeeJournal-0.3.0-arm32.apk",
+        "logicalBytes": 16448772,
+        "files": 1,
+        "deleted": true
+      },
+      {
+        "path": "deliverables/v0.3.0/CoffeeJournal-0.3.0-arm64.apk",
+        "logicalBytes": 18859836,
+        "files": 1,
+        "deleted": true
+      },
+      {
+        "path": "deliverables/v0.3.0/CoffeeJournal-0.3.0-changes.patch",
+        "logicalBytes": 173204,
+        "files": 1,
+        "deleted": true
+      },
+      {
+        "path": "deliverables/v0.3.0/CoffeeJournal-0.3.0-source.zip",
+        "logicalBytes": 160735,
+        "files": 1,
+        "deleted": true
+      },
+      {
+        "path": "deliverables/v0.3.0/CoffeeJournal-0.3.0-x86_64.apk",
+        "logicalBytes": 20359998,
+        "files": 1,
+        "deleted": true
+      }
+    ],
+    "retained": "Working source, Git history, tests, documentation, synthetic QA evidence and dependency indexes. Shared SDKs, caches, original AVD and other projects were not changed."
+  }
+}
